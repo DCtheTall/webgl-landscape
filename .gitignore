@@ -1,5 +1,8 @@
 # Dependencies
 vendor/
 
-# Compiled client side scripts
-public/dist/
+# Compiled client side script
+public/bundle.js
+
+# Client side Dependencies
+node_modules/
