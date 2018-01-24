@@ -9,6 +9,8 @@
   "author": "Dylan Cutler",
   "license": "ISC",
   "dependencies": {
+    "@types/gl-matrix": "^2.4.0",
+    "gl-matrix": "^2.4.0",
     "glslify-loader": "^1.0.2",
     "raw-loader": "^0.5.1",
     "ts-loader": "^3.3.0",

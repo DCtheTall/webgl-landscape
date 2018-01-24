@@ -1,7 +1,10 @@
+import { Camera } from './Camera';
+
 export class Scene {
   private canvas: HTMLCanvasElement;
   private gl: WebGLRenderingContext;
   private vertexBuffer: WebGLBuffer;
+  private camera: Camera;
   private shaderProgram: WebGLProgram;
   private planePoints: Float32Array;
   private hasThrownError: boolean;
@@ -15,6 +18,7 @@ export class Scene {
     this.vertexBuffer = this.gl.createBuffer();
     this.gl.clearColor(0, 0, 0, 1);
     this.gl.viewport(0, 0, canvas.width, canvas.height);
+    this.camera = new Camera();
   }
 
   private compileShader(source: string, type: number): WebGLShader {
@@ -51,6 +55,11 @@ export class Scene {
     this.gl.bufferData(this.gl.ARRAY_BUFFER, this.planePoints, this.gl.DYNAMIC_DRAW);
   }
 
+  private sendMatrixUniform(name: string, matrix: Float32Array) {
+    const location = this.gl.getUniformLocation(this.shaderProgram, name);
+    this.gl.uniformMatrix4fv(location, false, matrix);
+  }
+
   public setPlanePoints(vals: Float32Array) {
     this.planePoints = vals;
   }
@@ -64,6 +73,8 @@ export class Scene {
       if (!this.shaderProgram) {
         this.createShaderProgram();
         this.sendVertexAttributes(); // TODO experiment if this needs to be sent every frame
+        this.sendMatrixUniform('u_ViewMatrix', this.camera.getLookAt());
+        this.sendMatrixUniform('u_PerspectiveMatrix', this.camera.getPerspective(this.canvas));
       }
       this.gl.clear(this.gl.COLOR_BUFFER_BIT);
       this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, (this.planePoints.length / 2));
