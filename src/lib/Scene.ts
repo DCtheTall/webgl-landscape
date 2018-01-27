@@ -5,9 +5,11 @@ export class Scene {
   private canvas: HTMLCanvasElement;
   private gl: WebGLRenderingContext;
   private vertexBuffer: WebGLBuffer;
+  private gradientBuffer: WebGLBuffer;
   private camera: Camera;
   private shaderProgram: WebGLProgram;
-  private planePoints: Float32Array;
+  private planeVertices: Float32Array;
+  private planeGradients: Float32Array;
   private hasThrownError: boolean;
 
   constructor(canvas: HTMLCanvasElement) {
@@ -17,6 +19,7 @@ export class Scene {
     this.canvas = canvas;
     this.gl = <WebGLRenderingContext>(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
     this.vertexBuffer = this.gl.createBuffer();
+    this.gradientBuffer = this.gl.createBuffer();
     this.gl.clearColor(0, 0, 0, 1);
     this.gl.viewport(0, 0, canvas.width, canvas.height);
     this.camera = new Camera();
@@ -48,12 +51,17 @@ export class Scene {
     this.shaderProgram = shaderProgram;
   }
 
-  private sendVertexAttributes() {
-    const planePositionAttrLoc = this.gl.getAttribLocation(this.shaderProgram, 'a_PlanePosition');
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.vertexBuffer);
-    this.gl.vertexAttribPointer(planePositionAttrLoc, 2, this.gl.FLOAT, false, 0, 0);
-    this.gl.enableVertexAttribArray(planePositionAttrLoc);
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, this.planePoints, this.gl.DYNAMIC_DRAW);
+  private sendVectorAttributes(symbol: string, buffer: WebGLBuffer, vals: Float32Array) {
+    const attrLoc = this.gl.getAttribLocation(this.shaderProgram, symbol);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+    this.gl.vertexAttribPointer(attrLoc, 2, this.gl.FLOAT, false, 0, 0);
+    this.gl.enableVertexAttribArray(attrLoc);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, vals, this.gl.DYNAMIC_DRAW);
+  }
+
+  private sendAttributes() {
+    this.sendVectorAttributes('a_PlaneVertex', this.vertexBuffer, this.planeVertices);
+    this.sendVectorAttributes('a_PlaneGradient', this.gradientBuffer, this.planeGradients);
   }
 
   private sendMatrixUniform(name: string, matrix: Float32Array) {
@@ -67,22 +75,23 @@ export class Scene {
   }
 
   public setPlane(plane: Plane) {
-    this.planePoints = plane.getPlaneAsTriangleStrip();
+    this.planeVertices = plane.getVerticesAsTriangleStrip();
+    this.planeGradients = plane.getGradientsForTriangleStrip();
   }
 
   public render() {
     if (this.hasThrownError) return;
     try {
-      if (!this.planePoints) {
+      if (!this.planeVertices) {
         throw new Error('You must set the plane points in the scene');
       }
       if (!this.shaderProgram) {
         this.createShaderProgram();
-        this.sendVertexAttributes(); // TODO experiment if this needs to be sent every frame
+        this.sendAttributes(); // TODO experiment if this needs to be sent every frame
         this.sendUniforms();
       }
       this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-      this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, (this.planePoints.length / 2));
+      this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, (this.planeVertices.length / 2));
     } catch (err) {
       console.error(err);
       this.hasThrownError = true;
