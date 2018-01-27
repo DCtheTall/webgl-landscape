@@ -1,4 +1,5 @@
 import { Camera } from './Camera';
+import { Plane } from './Plane';
 
 export class Scene {
   private canvas: HTMLCanvasElement;
@@ -60,8 +61,13 @@ export class Scene {
     this.gl.uniformMatrix4fv(location, false, matrix);
   }
 
-  public setPlanePoints(vals: Float32Array) {
-    this.planePoints = vals;
+  private sendUniforms() {
+    this.sendMatrixUniform('u_ViewMatrix', this.camera.getLookAt());
+    this.sendMatrixUniform('u_PerspectiveMatrix', this.camera.getPerspective(this.canvas));
+  }
+
+  public setPlane(plane: Plane) {
+    this.planePoints = plane.getPlaneAsTriangleStrip();
   }
 
   public render() {
@@ -73,8 +79,7 @@ export class Scene {
       if (!this.shaderProgram) {
         this.createShaderProgram();
         this.sendVertexAttributes(); // TODO experiment if this needs to be sent every frame
-        this.sendMatrixUniform('u_ViewMatrix', this.camera.getLookAt());
-        this.sendMatrixUniform('u_PerspectiveMatrix', this.camera.getPerspective(this.canvas));
+        this.sendUniforms();
       }
       this.gl.clear(this.gl.COLOR_BUFFER_BIT);
       this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, (this.planePoints.length / 2));

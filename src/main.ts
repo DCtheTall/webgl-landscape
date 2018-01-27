@@ -7,6 +7,6 @@ import { Plane } from './lib/Plane';
   canvas.height = window.innerHeight;
   const scene = new Scene(canvas);
   const plane = new Plane();
-  scene.setPlanePoints(plane.getPlaneAsTriangleStrip());
+  scene.setPlane(plane);
   scene.render();
 })();

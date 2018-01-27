@@ -4,8 +4,8 @@ const UP = vec3.fromValues(0, 1, 0);
 
 export class Camera {
   private up: vec3 = UP;
-  private position: vec3 = vec3.fromValues(0, 10, 10);
-  private at: vec3 = vec3.fromValues(0, 8, -1);
+  private position: vec3 = vec3.fromValues(0, 25, 10);
+  private at: vec3 = vec3.fromValues(0, 24, -1);
 
   public getLookAt(): mat4 {
     return mat4.lookAt(

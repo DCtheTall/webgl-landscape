@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+
+	"github.com/gorilla/handlers"
 )
 
 func main() {
@@ -16,5 +18,5 @@ func main() {
 		port = 4000
 	}
 	fmt.Println(fmt.Sprintf("Listening on port... %d", port))
-	http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
+	http.ListenAndServe(fmt.Sprintf(":%d", port), handlers.LoggingHandler(os.Stdout, http.DefaultServeMux))
 }
