@@ -59,11 +59,6 @@ export class Scene {
     this.gl.bufferData(this.gl.ARRAY_BUFFER, vals, this.gl.DYNAMIC_DRAW);
   }
 
-  private sendAttributes() {
-    this.sendVectorAttributes('a_PlaneVertex', this.vertexBuffer, this.planeVertices);
-    this.sendVectorAttributes('a_PlaneGradient', this.gradientBuffer, this.planeGradients);
-  }
-
   private sendMatrixUniform(name: string, matrix: Float32Array) {
     const location = this.gl.getUniformLocation(this.shaderProgram, name);
     this.gl.uniformMatrix4fv(location, false, matrix);
@@ -76,7 +71,6 @@ export class Scene {
 
   public setPlane(plane: Plane) {
     this.planeVertices = plane.getVerticesAsTriangleStrip();
-    this.planeGradients = plane.getGradientsForTriangleStrip();
   }
 
   public render() {
@@ -87,7 +81,7 @@ export class Scene {
       }
       if (!this.shaderProgram) {
         this.createShaderProgram();
-        this.sendAttributes(); // TODO experiment if this needs to be sent every frame
+        this.sendVectorAttributes('a_PlaneVertex', this.vertexBuffer, this.planeVertices); // TODO experiment if this needs to be sent every frame
         this.sendUniforms();
       }
       this.gl.clear(this.gl.COLOR_BUFFER_BIT);
