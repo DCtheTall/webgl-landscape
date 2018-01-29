@@ -1,6 +1,6 @@
 #pragma glslify: perlin = require('glsl-noise/simplex/2d');
 
-const int OCTAVES = 6;
+const int OCTAVES = 8;
 const float PERSISTANCE = .5;
 
 float octavePerlin(vec2 vertex) {

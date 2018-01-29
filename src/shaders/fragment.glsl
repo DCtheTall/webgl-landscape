@@ -1,7 +1,7 @@
 precision mediump float;
 
 const vec3 LIGHT_POSITION = vec3(0., 20., -50.);
-const vec3 LIGHT_COLOR = vec3(.5, .7, .4);
+const vec3 LIGHT_COLOR = vec3(.7, .7, .4);
 const vec3 AMBIENT_COLOR = vec3(.2, .2, .3);
 
 varying vec3 v_PlaneVertex;
