@@ -70,7 +70,7 @@ export class Scene {
   }
 
   public setPlane(plane: Plane) {
-    this.planeVertices = plane.getVerticesAsTriangleStrip();
+    this.planeVertices = plane.getVerticesAsLines();
   }
 
   public render() {
@@ -85,7 +85,7 @@ export class Scene {
         this.sendUniforms();
       }
       this.gl.clear(this.gl.COLOR_BUFFER_BIT);
-      this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, (this.planeVertices.length / 2));
+      this.gl.drawArrays(this.gl.LINES, 0, (this.planeVertices.length / 2));
     } catch (err) {
       console.error(err);
       this.hasThrownError = true;
