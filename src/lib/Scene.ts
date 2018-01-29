@@ -20,7 +20,7 @@ export class Scene {
     this.gl = <WebGLRenderingContext>(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
     this.vertexBuffer = this.gl.createBuffer();
     this.gradientBuffer = this.gl.createBuffer();
-    this.gl.clearColor(0, 0, 0, 1);
+    this.gl.clearColor(0.7, 0.8, 0.8, 1);
     this.gl.viewport(0, 0, canvas.width, canvas.height);
     this.camera = new Camera();
   }
