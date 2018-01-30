@@ -13,6 +13,9 @@ export class Scene {
   private planeVertices: Float32Array;
   private planeGradients: Float32Array;
   private hasThrownError: boolean;
+  private rendering: boolean;
+  private firstRender: number;
+  private lastRender: number;
 
   constructor(canvas: HTMLCanvasElement) {
     if (!canvas) {
@@ -66,28 +69,47 @@ export class Scene {
     this.gl.uniformMatrix4fv(location, false, matrix);
   }
 
-  private sendUniforms() {
+  private sendUniforms(time: number = 0) {
     this.sendMatrixUniform('u_ViewMatrix', this.camera.getLookAt());
     this.sendMatrixUniform('u_PerspectiveMatrix', this.camera.getPerspective(this.canvas));
 
     const cameraPositionLocation = this.gl.getUniformLocation(this.shaderProgram, 'u_CameraPosition');
     this.gl.uniform3fv(cameraPositionLocation, this.camera.getPosition());
+
+    const timeLocation = this.gl.getUniformLocation(this.shaderProgram, 'u_Time');
+    this.gl.uniform1f(timeLocation, time && -(time - this.firstRender) / 100);
   }
 
   public setPlane(plane: Plane) {
     this.planeVertices = plane.getVerticesAsTriangleStrip();
   }
 
-  public render() {
+  public render(animate?: boolean) {
+    const now = Date.now();
+    if (!this.lastRender) this.firstRender = now;
+    if (
+      this.rendering
+      || this.hasThrownError
+      || (this.lastRender && now - this.lastRender < 1000 / FRAME_RATE)
+    ) {
+      if (animate) window.requestAnimationFrame(() => this.render(true));
+      return;
+    }
     try {
       if (!this.planeVertices) {
         throw new Error('You must set the plane points in the scene');
       }
-      this.createShaderProgram();
+      this.rendering = true;
+      if (!this.shaderProgram) {
+        this.createShaderProgram();
+      }
       this.sendVectorAttributes('a_PlaneVertex', this.vertexBuffer, this.planeVertices); // TODO experiment if this needs to be sent every frame
-      this.sendUniforms();
+      this.sendUniforms(animate ? now : 0);
       this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
       this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, (this.planeVertices.length / 2));
+      this.rendering = false;
+      this.lastRender = now;
+      if (animate) window.requestAnimationFrame(() => this.render(true));
     } catch (err) {
       console.error(err);
     }

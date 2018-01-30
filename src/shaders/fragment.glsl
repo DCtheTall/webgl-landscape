@@ -10,6 +10,7 @@ uniform vec3 u_CameraPosition;
 
 varying vec3 v_PlaneVertex;
 varying vec3 v_PlaneNormal;
+varying float v_Time;
 
 #pragma glslify: fragColor = require('./lib/frag-color.glsl');
 #pragma glslify: fog = require('./lib/fog.glsl');
@@ -28,7 +29,7 @@ void main() {
   lightColor += (lambertian * DIFFUSE_LIGHT_COLOR);
   lightColor += (specular * SPECULAR_COLOR);
 
-  vec3 color = lightColor * fragColor(v_PlaneVertex, v_PlaneNormal, 10.);
+  vec3 color = lightColor * fragColor(v_PlaneVertex, v_PlaneNormal, 10., v_Time);
 
   float fogWeight = fog(u_CameraPosition, v_PlaneVertex);
   color = ((1. - fogWeight) * color) + (fogWeight * FOG_COLOR);

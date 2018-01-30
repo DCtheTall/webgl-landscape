@@ -13,8 +13,9 @@ float rand(vec2 v){
     return fract(sin(dot(v, vec2(12.9898,78.233))) * 43758.5453);
 }
 
-vec3 fragColor(vec3 vertex, vec3 normal, float amp) {
-  float y = vertex.y + (perlin(vertex.xz / 2.) * vertex.y / 3.);
+vec3 fragColor(vec3 vertex, vec3 normal, float amp, float time) {
+  vec2 dy = vec2(0., time);
+  float y = vertex.y + (perlin((vertex.xz + dy) / 2.) * vertex.y / 3.);
 
   if (y < -amp / 2. && dot(normal, vec3(0., 1., 0.)) > .3) return BASE_GREEN;
   if (y < -amp / 5. && dot(normal, vec3(0., 1., 0.)) > .3) return GREEN;
