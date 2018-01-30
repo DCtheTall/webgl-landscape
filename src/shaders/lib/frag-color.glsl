@@ -1,6 +1,6 @@
 #pragma glslify: perlin = require('glsl-noise/simplex/2d');
 
-const vec3 BASE_GREEN = vec3(88., 130., 74.) / 255.;
+const vec3 BASE_GREEN = vec3(118., 130., 104.) / 255.;
 const vec3 GREEN = vec3(138., 160., 124.) / 255.;
 const vec3 GREY = vec3(167., 170., 160.) / 255.;
 const vec3 LIGHT_GREY = vec3(178., 182., 187.) / 255.;
