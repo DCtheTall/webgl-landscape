@@ -25,4 +25,8 @@ export class Camera {
       1e6
     );
   }
+
+  public getPosition(): vec3 {
+    return this.position;
+  }
 }

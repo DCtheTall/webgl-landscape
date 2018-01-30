@@ -67,6 +67,9 @@ export class Scene {
   private sendUniforms() {
     this.sendMatrixUniform('u_ViewMatrix', this.camera.getLookAt());
     this.sendMatrixUniform('u_PerspectiveMatrix', this.camera.getPerspective(this.canvas));
+
+    const cameraPositionLocation = this.gl.getUniformLocation(this.shaderProgram, 'u_CameraPosition');
+    this.gl.uniform3fv(cameraPositionLocation, this.camera.getPosition());
   }
 
   public setPlane(plane: Plane) {

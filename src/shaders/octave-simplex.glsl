@@ -3,6 +3,16 @@
 const int OCTAVES = 8;
 const float PERSISTANCE = .5;
 
+/*
+octaveSimplex noise
+
+Superimposes a series of sine waves
+which increase in frequency but decrease
+in amplitude, the amplitudes also run
+through a simplex noise algorithm
+
+Creates fractal like pattern
+*/
 float octaveSimplex(vec2 vertex) {
   float total = 0.;
   float frequency = 1.;
