@@ -1,6 +1,8 @@
 import { Camera } from './Camera';
 import { Plane } from './Plane';
 
+const FRAME_RATE = 10; // fps
+
 export class Scene {
   private canvas: HTMLCanvasElement;
   private gl: WebGLRenderingContext;
@@ -20,7 +22,7 @@ export class Scene {
     this.gl = <WebGLRenderingContext>(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
     this.vertexBuffer = this.gl.createBuffer();
     this.gradientBuffer = this.gl.createBuffer();
-    this.gl.clearColor(0.8, 0.92, 0.95, 1);
+    this.gl.clearColor(.75, .87, .9, 1);
     this.gl.viewport(0, 0, canvas.width, canvas.height);
     this.camera = new Camera();
   }
@@ -77,21 +79,17 @@ export class Scene {
   }
 
   public render() {
-    if (this.hasThrownError) return;
     try {
       if (!this.planeVertices) {
         throw new Error('You must set the plane points in the scene');
       }
-      if (!this.shaderProgram) {
-        this.createShaderProgram();
-        this.sendVectorAttributes('a_PlaneVertex', this.vertexBuffer, this.planeVertices); // TODO experiment if this needs to be sent every frame
-        this.sendUniforms();
-      }
-      this.gl.clear(this.gl.COLOR_BUFFER_BIT);
+      this.createShaderProgram();
+      this.sendVectorAttributes('a_PlaneVertex', this.vertexBuffer, this.planeVertices); // TODO experiment if this needs to be sent every frame
+      this.sendUniforms();
+      this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
       this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, (this.planeVertices.length / 2));
     } catch (err) {
       console.error(err);
-      this.hasThrownError = true;
     }
   }
 }

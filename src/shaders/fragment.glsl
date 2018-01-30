@@ -1,10 +1,10 @@
 precision mediump float;
 
 const vec3 LIGHT_POSITION = vec3(0., 20., -50.);
-const vec3 DIFFUSE_LIGHT_COLOR = vec3(.65, .65, .5);
+const vec3 DIFFUSE_LIGHT_COLOR = vec3(.7, .7, .5);
 const vec3 AMBIENT_COLOR = vec3(.2, .2, .3);
 const vec3 SPECULAR_COLOR = vec3(.8, .8, .5);
-const vec3 FOG_COLOR = vec3(.8, .92, .95);
+const vec3 FOG_COLOR = vec3(.75, .87, .9);
 
 uniform vec3 u_CameraPosition;
 

@@ -1,7 +1,7 @@
 import { vec2 } from 'gl-matrix';
 
 const MAX_PLANE_POSITION = 100;
-const DEFAULT_RESOLUTION = 1e3;
+const DEFAULT_RESOLUTION = 500;
 
 export class Plane {
   private resolution: number;
@@ -27,12 +27,10 @@ export class Plane {
     const points = Array<number>(0);
 
     for (let x = -MAX_PLANE_POSITION; x < MAX_PLANE_POSITION; x += step)
-    for (let y = -MAX_PLANE_POSITION; y < MAX_PLANE_POSITION; y += step) {
+    for (let y = -MAX_PLANE_POSITION; y <= MAX_PLANE_POSITION; y += step) {
       if (Math.round(x / step) % 2) {
-        y *= -1;
-        points.push(x, y);
-        points.push(x + step, y);
-        y *= -1;
+        points.push(x, -y);
+        points.push(x + step, -y);
       } else {
         points.push(x, y);
         points.push(x + step, y);

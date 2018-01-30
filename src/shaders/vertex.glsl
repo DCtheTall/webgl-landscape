@@ -8,10 +8,10 @@ uniform mat4 u_PerspectiveMatrix;
 varying vec3 v_PlaneVertex;
 varying vec3 v_PlaneNormal;
 
-#pragma glslify: noise = require('./lib/octave-simplex.glsl');
+#pragma glslify: noise = require('./lib/octave-perlin.glsl');
 
 void main() {
-  float amp = 8.;
+  float amp = 20.;
   vec2 dx = vec2(.001, 0.);
   vec2 dz = vec2(0., .001);
   vec3 vx = vec3(a_PlaneVertex.x + .001, amp * noise(a_PlaneVertex + dx), a_PlaneVertex.y);
