@@ -1,4 +1,4 @@
-#pragma glslify: perlin = require('glsl-noise/simplex/2d');
+#pragma glslify: simplex = require('glsl-noise/simplex/2d');
 
 const int OCTAVES = 8;
 const float PERSISTANCE = .5;
@@ -13,14 +13,14 @@ through a simplex noise algorithm
 
 Creates fractal like pattern
 */
-float octavePerlin(vec2 vertex, float time) {
+float octaveSimplex(vec2 vertex, float time) {
   float total = 0.;
   float frequency = 1.;
   float amplitude = 1.;
   float maxValue = 0.;
   vec2 dy = vec2(0., time);
   for (int i = 0; i < OCTAVES; i++) {
-    total += amplitude * perlin(frequency * (vertex + dy) / 50.);
+    total += amplitude * simplex(frequency * (vertex + dy) / 50.);
     maxValue += amplitude;
     amplitude *= PERSISTANCE;
     frequency *= 2.;
@@ -28,4 +28,4 @@ float octavePerlin(vec2 vertex, float time) {
   return total / maxValue;
 }
 
-#pragma glslify: export(octavePerlin);
+#pragma glslify: export(octaveSimplex);
