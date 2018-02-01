@@ -21,7 +21,7 @@ export class Camera {
       mat4.create(),
       Math.atan(2 * (canvas.height / canvas.width)),
       canvas.width / canvas.height,
-      0.01,
+      0.1,
       1e6
     );
   }

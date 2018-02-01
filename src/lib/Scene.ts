@@ -1,7 +1,7 @@
 import { Camera } from './Camera';
 import { Plane } from './Plane';
 
-const FRAME_RATE = 10; // fps
+const FRAME_RATE = 30; // fps
 
 export class Scene {
   private canvas: HTMLCanvasElement;
@@ -26,6 +26,9 @@ export class Scene {
     this.vertexBuffer = this.gl.createBuffer();
     this.gradientBuffer = this.gl.createBuffer();
     this.gl.clearColor(.75, .87, .9, 1);
+    this.gl.clearDepth(1.0);
+    this.gl.enable(this.gl.DEPTH_TEST);
+    this.gl.depthFunc(this.gl.LEQUAL);
     this.gl.viewport(0, 0, canvas.width, canvas.height);
     this.camera = new Camera();
   }
@@ -102,8 +105,8 @@ export class Scene {
       this.rendering = true;
       if (!this.shaderProgram) {
         this.createShaderProgram();
+        this.sendVectorAttributes('a_PlaneVertex', this.vertexBuffer, this.planeVertices); // TODO experiment if this needs to be sent every frame
       }
-      this.sendVectorAttributes('a_PlaneVertex', this.vertexBuffer, this.planeVertices); // TODO experiment if this needs to be sent every frame
       this.sendUniforms(animate ? now : 0);
       this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
       this.gl.drawArrays(this.gl.TRIANGLE_STRIP, 0, (this.planeVertices.length / 2));

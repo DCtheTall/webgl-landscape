@@ -1,4 +1,4 @@
-#pragma glslify: perlin = require('glsl-noise/classic/2d');
+#pragma glslify: perlin = require('glsl-noise/simplex/2d');
 
 const int OCTAVES = 8;
 const float PERSISTANCE = .5;
