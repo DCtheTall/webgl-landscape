@@ -2,7 +2,7 @@
   "name": "webgl-landscape",
   "version": "1.0.0",
   "description": "Procedurally generated landscape with WebGL",
-  "main": "src/main.ts",
+  "main": "webpack --progress",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "heroku-postbuild": "webpack --progress"
