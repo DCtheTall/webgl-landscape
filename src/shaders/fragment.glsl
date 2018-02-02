@@ -29,7 +29,7 @@ void main() {
   lightColor += (lambertian * DIFFUSE_LIGHT_COLOR);
   lightColor += (specular * SPECULAR_COLOR);
 
-  vec3 color = .7 * lightColor * fragColor(v_PlaneVertex, v_PlaneNormal, 10., v_Time);
+  vec3 color = lightColor * fragColor(v_PlaneVertex, v_PlaneNormal, 10., v_Time);
 
   float fogWeight = fog(u_CameraPosition, v_PlaneVertex);
   color = ((1. - fogWeight) * color) + (fogWeight * FOG_COLOR);

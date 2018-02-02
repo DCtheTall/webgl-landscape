@@ -13,7 +13,7 @@ varying float v_Time;
 #pragma glslify: noise = require('./lib/octave-simplex.glsl');
 
 void main() {
-  float amp = 15.;
+  float amp = 12.;
   vec2 dx = vec2(.1, 0.);
   vec2 dz = vec2(0., .1);
   vec3 vx = vec3(a_PlaneVertex.x + .1, amp * noise(a_PlaneVertex + dx, u_Time), a_PlaneVertex.y);

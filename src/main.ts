@@ -8,5 +8,5 @@ import { Plane } from './lib/Plane';
   const scene = new Scene(canvas);
   const plane = new Plane();
   scene.setPlane(plane);
-  scene.render(true);
+  scene.render();
 })();
