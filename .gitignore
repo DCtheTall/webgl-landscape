@@ -1,6 +1,3 @@
-# Dependencies
-vendor/
-
 # Compiled client side script
 public/bundle.js
 
