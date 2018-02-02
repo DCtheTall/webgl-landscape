@@ -1,10 +1,7 @@
 {
-	"ImportPath": "webgl-landscape",
+	"ImportPath": "webgl-landscape/cmd/start",
 	"GoVersion": "go1.9",
 	"GodepVersion": "v79",
-	"Packages": [
-		"./..."
-	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/gorilla/handlers",
