@@ -11,6 +11,9 @@
     "type": "git",
     "url": "git+https://github.com/DCtheTall/webgl-landscape.git"
   },
+  "engines": {
+    "node": "8.9.0"
+  },
   "author": "Dylan Cutler",
   "license": "ISC",
   "dependencies": {
