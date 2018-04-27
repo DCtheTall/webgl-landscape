@@ -84,7 +84,7 @@ export class Scene {
   }
 
   public setPlane(plane: Plane) {
-    this.planeVertices = plane.getVerticesAsTriangleStrip();
+    this.planeVertices = plane.vertices;
   }
 
   public render(animate?: boolean) {
