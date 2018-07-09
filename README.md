@@ -20,7 +20,7 @@ the illusion of depth.
 This app just runs a simple Go server which serves the
 public directory as static files.
 
-This project uses godep to manage server side dependencies.
+This project uses [godep](https://github.com/tools/godep) to manage server side dependencies.
 To run the server, run `start.sh`.
 
 ## Front end
