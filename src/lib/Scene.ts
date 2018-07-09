@@ -7,7 +7,6 @@ export class Scene {
   private canvas: HTMLCanvasElement;
   private gl: WebGLRenderingContext;
   private vertexBuffer: WebGLBuffer;
-  private gradientBuffer: WebGLBuffer;
   private camera: Camera;
   private shaderProgram: WebGLProgram;
   private planeVertices: Float32Array;
@@ -24,7 +23,6 @@ export class Scene {
     this.canvas = canvas;
     this.gl = <WebGLRenderingContext>(canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
     this.vertexBuffer = this.gl.createBuffer();
-    this.gradientBuffer = this.gl.createBuffer();
     this.gl.clearColor(.75, .87, .9, 1);
     this.gl.clearDepth(1.0);
     this.gl.enable(this.gl.DEPTH_TEST);
