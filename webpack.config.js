@@ -1,6 +1,6 @@
 module.exports = {
   entry: './src/main.ts',
-  output: { filename: './public/bundle.js' },
+  output: { filename: './public/assets/bundle.js' },
   resolve: {
     extensions: ['.ts', '.js', '.d.ts'],
   },

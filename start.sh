@@ -1,1 +1,1 @@
-go run cmd/start/main.go
+GO_ENV=development go run cmd/start/main.go
