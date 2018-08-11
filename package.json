@@ -4,6 +4,8 @@
   "description": "Procedurally generated landscape with WebGL",
   "main": "webpack --progress",
   "scripts": {
+    "dev": "webpack --mode development --progress --watch",
+    "build": "webpack --mode production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +17,13 @@
   "bugs": {
     "url": "https://github.com/DCtheTall/webgl-landscape/issues"
   },
-  "homepage": "https://github.com/DCtheTall/webgl-landscape#readme"
+  "homepage": "https://github.com/DCtheTall/webgl-landscape#readme",
+  "dependencies": {
+    "glslify-loader": "^1.0.2",
+    "raw-loader": "^0.5.1",
+    "ts-loader": "^4.4.2",
+    "typescript": "^3.0.1",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0"
+  }
 }
