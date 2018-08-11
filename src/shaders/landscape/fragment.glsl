@@ -12,8 +12,8 @@ varying vec3 v_PlaneVertex;
 varying vec3 v_PlaneNormal;
 varying float v_Time;
 
-#pragma glslify: fragColor = require('./lib/frag-color.glsl');
-#pragma glslify: fog = require('./lib/fog.glsl');
+#pragma glslify: fragColor = require('../lib/frag-color.glsl');
+#pragma glslify: fog = require('../lib/fog.glsl');
 
 void main() {
   vec3 lightDirection = normalize(LIGHT_POSITION - v_PlaneVertex);

@@ -19,6 +19,9 @@
   },
   "homepage": "https://github.com/DCtheTall/webgl-landscape#readme",
   "dependencies": {
+    "@types/gl-matrix": "^2.4.1",
+    "gl-matrix": "^2.7.1",
+    "glsl-noise": "0.0.0",
     "glslify-loader": "^1.0.2",
     "raw-loader": "^0.5.1",
     "ts-loader": "^4.4.2",

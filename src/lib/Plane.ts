@@ -1,17 +1,10 @@
-import { vec2 } from 'gl-matrix';
-
 const MAX_PLANE_POSITION = 100;
 const DEFAULT_RESOLUTION = 500;
 
-export enum VertexAlgorithms {
-  Lines,
-  TriangleStrip,
-}
-
-export class Plane {
+export default class Plane {
   private vertices: number[];
 
-  constructor(algorithm: VertexAlgorithms = VertexAlgorithms.TriangleStrip) {
+  constructor() {
     const step = MAX_PLANE_POSITION / DEFAULT_RESOLUTION;
     const points = Array<number>(0);
     for (let x = -MAX_PLANE_POSITION; x < MAX_PLANE_POSITION; x += step)

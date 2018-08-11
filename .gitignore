@@ -1,5 +1,5 @@
 # Compiled client side script
-public/bundle.js
+public/assets/bundle.js
 
 # Client side Dependencies
 node_modules/

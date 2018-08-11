@@ -9,21 +9,16 @@ import (
 	"strconv"
 )
 
-// Abstract converting http.Handler type into http.HandlerFunc for middleware
-func httpHandlerToHandlerFunc(handler http.Handler) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		handler.ServeHTTP(w, r)
-	}
-}
-
-// Middleware
-
 type middleware func(next http.HandlerFunc) http.HandlerFunc
+
+type templateData struct {
+	Development bool
+}
 
 func withLogging(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println(
-			fmt.Sprintf("Logged connection from %s", r.RemoteAddr))
+			fmt.Sprintf("Logged connection from: %s", r.RemoteAddr))
 		next.ServeHTTP(w, r)
 	}
 }
@@ -31,7 +26,7 @@ func withLogging(next http.HandlerFunc) http.HandlerFunc {
 func withTracing(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		log.Println(
-			fmt.Sprintf("Logged connection from %s", r.RequestURI))
+			fmt.Sprintf("Request: %s %s", r.Method, r.RequestURI))
 		next.ServeHTTP(w, r)
 	}
 }
@@ -48,23 +43,30 @@ func composeMiddleware(mws ...middleware) middleware {
 	}
 }
 
-// TemplateData interface for HTML template
-type TemplateData struct {
-	Development bool
+func httpHandlerToHandlerFunc(handler http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		handler.ServeHTTP(w, r)
+	}
 }
 
-func main() {
-	fileServer := http.FileServer(http.Dir("./public"))
-	tmpl := template.Must(template.ParseFiles("./public/index.html"))
-	handler := func(w http.ResponseWriter, r *http.Request) {
+func serveViewWithTemplate(tmpl *template.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		env := os.Getenv("GO_ENV")
-		data := TemplateData{
+		data := templateData{
 			Development: env == "development"}
 		tmpl.Execute(w, data)
 	}
+}
+
+func main() {
+	tmpl := template.Must(template.ParseFiles("./public/index.html"))
+	fileServer := http.FileServer(http.Dir("./public"))
 	http.HandleFunc(
 		"/",
-		composeMiddleware(withLogging, withTracing)(handler))
+		composeMiddleware(
+			withLogging,
+			withTracing,
+		)(serveViewWithTemplate(tmpl)))
 	http.HandleFunc(
 		"/assets/",
 		composeMiddleware(

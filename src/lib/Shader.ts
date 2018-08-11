@@ -1,14 +1,16 @@
 enum ShaderProgramTypes {
   BOOL,
   FLOAT,
+  MATRIX4,
   VECTOR2,
+  VECTOR3,
 }
 
 
 interface ShaderValue {
   locationName: string;
   type?: ShaderProgramTypes;
-  data?: number | number[];
+  data?: number|number[]|Float32Array;
   buffer?: WebGLBuffer;
 }
 
@@ -58,6 +60,7 @@ export default class Shader {
       console.log('FRAGMENT SHADER:\n', addLineNumbers(fragmentShader), '\n');
     }
     this.gl = gl;
+    this.shaderSources = [];
     this.shaderSources[this.gl.VERTEX_SHADER] = vertexShader;
     this.shaderSources[this.gl.FRAGMENT_SHADER] = fragmentShader;
     this.attributes = attributes;
@@ -102,7 +105,6 @@ export default class Shader {
     Object.keys(this.uniforms).forEach((key: string) => {
       const uniform = this.uniforms[key];
       const { locationName } = uniform;
-      uniform.buffer = this.gl.createBuffer();
       uniform.location = this.gl.getUniformLocation(this.program, locationName);
     });
   }
@@ -123,10 +125,6 @@ export default class Shader {
     this.gl.enableVertexAttribArray(location);
     this.gl.bufferData(
       this.gl.ARRAY_BUFFER, new Float32Array(<number[]>data), this.gl.DYNAMIC_DRAW);
-  }
-
-  public getUniform(key: string) {
-    return this.uniforms[key];
   }
 
   public sendAttributes() {
@@ -151,14 +149,27 @@ export default class Shader {
           this.gl.uniform1i(
             uniform.location, <number>uniform.data);
           break;
+
         case ShaderProgramTypes.FLOAT:
           this.gl.uniform1f(
             uniform.location, <number>uniform.data);
           break;
+
+        case ShaderProgramTypes.MATRIX4:
+          this.gl.uniformMatrix4fv(
+            uniform.location, false, <number[]>uniform.data);
+          break;
+
         case ShaderProgramTypes.VECTOR2:
           this.gl.uniform2fv(
-            uniform.location, new Float32Array(<number[]>uniform.data));
+            uniform.location, <number[]>uniform.data);
           break;
+
+        case ShaderProgramTypes.VECTOR3:
+          this.gl.uniform3fv(
+            uniform.location, <number[]>uniform.data);
+          break;
+
         default:
           throw new Error(`Invalid type provided for uniform ${key} provided.`);
       }
