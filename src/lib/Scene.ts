@@ -1,12 +1,14 @@
 import Shader from './Shader';
 import Camera from './Camera';
 import Plane from './Plane';
+import RenderFrame from './RenderFrame';
 
 export default class Scene {
   private gl: WebGLRenderingContext;
   private camera: Camera;
   private plane: Plane;
   private shader: Shader;
+  private renderFrame: RenderFrame;
 
   constructor(canvas: HTMLCanvasElement) {
     this.gl =
@@ -18,7 +20,10 @@ export default class Scene {
     this.gl.depthFunc(this.gl.LEQUAL);
     this.gl.viewport(0, 0, canvas.width, canvas.height);
 
-    this.camera = new Camera();
+    this.camera = new Camera({
+      width: canvas.width,
+      height: canvas.height,
+    });
     this.plane = new Plane();
     this.shader = new Shader({
       gl: this.gl,
@@ -39,7 +44,7 @@ export default class Scene {
         },
         uPerspectiveMatrix: {
           locationName: 'u_PerspectiveMatrix',
-          data: <Float32Array>this.camera.getPerspective(canvas),
+          data: <Float32Array>this.camera.getPerspective(),
           type: Shader.Types.MATRIX4,
         },
         uCameraPosition: {
@@ -54,14 +59,16 @@ export default class Scene {
         },
       },
     });
-    this.shader.useProgram();
+    this.renderFrame = new RenderFrame({
+      gl: this.gl,
+      camera: this.camera,
+      shader: this.shader,
+      main: true,
+    });
   }
 
   public render() {
-    this.shader.sendAttributes();
-    this.shader.sendUniforms();
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-    this.gl.drawArrays(
-      this.gl.TRIANGLE_STRIP, 0, this.plane.getVertices().length / 2);
+    this.renderFrame.render(this.plane.getVertices().length / 2);
   }
 }

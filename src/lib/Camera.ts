@@ -1,11 +1,40 @@
 import { vec3, mat4 } from 'gl-matrix';
 
 const UP = vec3.fromValues(0, 1, 0);
+const POSITION = vec3.fromValues(0, 20, 10);
+const LOOK_AT = vec3.fromValues(0, 12, -20);
+
+interface CameraConstructorParams {
+  width: number;
+  height: number;
+  at?: vec3;
+  position?: vec3;
+  up?: vec3;
+}
 
 export default class Camera {
-  private up: vec3 = UP;
-  private position: vec3 = vec3.fromValues(0, 20, 10);
-  private at: vec3 = vec3.fromValues(0, 12, -20);
+  private aspect: number;
+  private at: vec3;
+  private position: vec3;
+  private up: vec3;
+
+  private height: number;
+  private width: number;
+
+  constructor({
+    height,
+    width,
+    at = LOOK_AT,
+    position = POSITION,
+    up = UP,
+  }: CameraConstructorParams) {
+    this.height = height;
+    this.width = width;
+    this.aspect = width / height;
+    this.at = at;
+    this.position = position;
+    this.up = up;
+  }
 
   public getLookAt(): mat4 {
     return mat4.lookAt(
@@ -16,11 +45,11 @@ export default class Camera {
     );
   }
 
-  public getPerspective(canvas: HTMLCanvasElement): mat4 {
+  public getPerspective(): mat4 {
     return mat4.perspective(
       mat4.create(),
-      Math.atan(2 * (canvas.height / canvas.width)),
-      canvas.width / canvas.height,
+      Math.atan(2 * this.aspect),
+      this.aspect,
       0.1,
       1e6
     );
@@ -28,5 +57,13 @@ export default class Camera {
 
   public getPosition(): vec3 {
     return this.position;
+  }
+
+  public getSceneHeight(): number {
+    return this.height;
+  }
+
+  public getSceneWidth(): number {
+    return this.width;
   }
 }

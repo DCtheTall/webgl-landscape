@@ -53,7 +53,8 @@ func serveViewWithTemplate(tmpl *template.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		env := os.Getenv("GO_ENV")
 		data := templateData{
-			Development: env == "development"}
+			Development: env == "development",
+		}
 		tmpl.Execute(w, data)
 	}
 }
