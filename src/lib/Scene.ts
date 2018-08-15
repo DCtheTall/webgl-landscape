@@ -63,7 +63,6 @@ export default class Scene {
       gl: this.gl,
       camera: this.camera,
       shader: this.shader,
-      main: true,
     });
   }
 

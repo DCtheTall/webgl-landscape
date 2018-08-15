@@ -5,42 +5,96 @@ interface RenderFrameConstructorParams {
   gl: WebGLRenderingContext;
   shader: Shader;
   camera: Camera;
-  main?: boolean;
+  renderToTexture?: boolean;
+  useRenderBuffer?: boolean;
 }
 
 export default class RenderFrame {
-  private main: boolean;
-
+  private renderToTexture: boolean;
+  private useRenderBuffer: boolean;
   private gl: WebGLRenderingContext;
   private shader: Shader;
   private camera: Camera;
   private frameBuffer: WebGLFramebuffer;
   private texture: WebGLTexture;
+  private renderBuffer: WebGLRenderbuffer;
 
   constructor({
-    main = false,
     gl,
     shader,
     camera,
+    renderToTexture = false,
+    useRenderBuffer = false,
   }: RenderFrameConstructorParams) {
+    this.renderToTexture = renderToTexture;
+    this.useRenderBuffer = useRenderBuffer;
     this.gl = gl;
-    this.frameBuffer = main ?
-      null
-      : this.gl.createFramebuffer();
     this.shader = shader;
     this.camera = camera;
-
-    this.initTexture(main);
+    this.frameBuffer = renderToTexture ?
+      this.gl.createFramebuffer() : null;
+    this.initTexture();
+    this.initRenderBuffer();
   }
 
-  private initTexture(main: boolean) {
-    if (!main) {
+  private initRenderBuffer() {
+    if (!this.useRenderBuffer) {
+      this.renderBuffer = null;
+      return;
+    }
+    this.renderBuffer = this.gl.createRenderbuffer();
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.frameBuffer);
+    this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, this.renderBuffer);
+    this.gl.renderbufferStorage(
+      this.gl.RENDERBUFFER,
+      this.gl.DEPTH_COMPONENT16,
+      this.camera.getSceneWidth(),
+      this.camera.getSceneHeight(),
+    );
+    this.gl.framebufferRenderbuffer(
+      this.gl.FRAMEBUFFER,
+      this.gl.DEPTH_ATTACHMENT,
+      this.gl.RENDERBUFFER,
+      this.renderBuffer,
+    );
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+    this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, null);
+  }
+
+  private initTexture() {
+    if (!this.renderToTexture) {
       this.texture = null;
       return;
     }
     this.texture = this.gl.createTexture();
     this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
-    // TODO
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.frameBuffer);
+    this.gl.texImage2D(
+      this.gl.TEXTURE_2D,
+      0,
+      this.gl.RGBA,
+      this.camera.getSceneWidth(),
+      this.camera.getSceneHeight(),
+      0,
+      this.gl.RGBA,
+      this.gl.UNSIGNED_BYTE,
+      null,
+    );
+    this.gl.texParameteri(
+      this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
+    this.gl.texParameteri(
+      this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+    this.gl.texParameteri(
+      this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+    this.gl.framebufferTexture2D(
+      this.gl.FRAMEBUFFER,
+      this.gl.COLOR_ATTACHMENT0,
+      this.gl.TEXTURE_2D,
+      this.texture,
+      0,
+    );
+    this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
   }
 
   public render(nVertices: number) {
