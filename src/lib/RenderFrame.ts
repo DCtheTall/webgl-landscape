@@ -4,7 +4,9 @@ import Camera from './Camera';
 interface RenderFrameConstructorParams {
   gl: WebGLRenderingContext;
   shader: Shader;
-  camera: Camera;
+  width: number;
+  height: number;
+  nVertices: number;
   renderToTexture?: boolean;
   useRenderBuffer?: boolean;
 }
@@ -13,16 +15,21 @@ export default class RenderFrame {
   private renderToTexture: boolean;
   private useRenderBuffer: boolean;
   private gl: WebGLRenderingContext;
-  private shader: Shader;
-  private camera: Camera;
   private frameBuffer: WebGLFramebuffer;
-  private texture: WebGLTexture;
   private renderBuffer: WebGLRenderbuffer;
+  private height: number;
+  private width: number;
+  private nVertices: number;
+
+  public shader: Shader;
+  public texture: WebGLTexture;
 
   constructor({
     gl,
     shader,
-    camera,
+    width,
+    height,
+    nVertices,
     renderToTexture = false,
     useRenderBuffer = false,
   }: RenderFrameConstructorParams) {
@@ -30,7 +37,9 @@ export default class RenderFrame {
     this.useRenderBuffer = useRenderBuffer;
     this.gl = gl;
     this.shader = shader;
-    this.camera = camera;
+    this.width = width;
+    this.height = height;
+    this.nVertices = nVertices;
     this.frameBuffer = renderToTexture ?
       this.gl.createFramebuffer() : null;
     this.initTexture();
@@ -48,8 +57,8 @@ export default class RenderFrame {
     this.gl.renderbufferStorage(
       this.gl.RENDERBUFFER,
       this.gl.DEPTH_COMPONENT16,
-      this.camera.getSceneWidth(),
-      this.camera.getSceneHeight(),
+      this.width,
+      this.height,
     );
     this.gl.framebufferRenderbuffer(
       this.gl.FRAMEBUFFER,
@@ -73,8 +82,8 @@ export default class RenderFrame {
       this.gl.TEXTURE_2D,
       0,
       this.gl.RGBA,
-      this.camera.getSceneWidth(),
-      this.camera.getSceneHeight(),
+      this.width,
+      this.height,
       0,
       this.gl.RGBA,
       this.gl.UNSIGNED_BYTE,
@@ -97,12 +106,16 @@ export default class RenderFrame {
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
   }
 
-  public render(nVertices: number) {
+  public render() {
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.frameBuffer);
+    this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, this.renderBuffer);
+    this.gl.viewport(0, 0, this.width, this.height);
     this.shader.useProgram();
     this.shader.sendAttributes();
     this.shader.sendUniforms();
     this.gl.drawArrays(
-      this.gl.TRIANGLE_STRIP, 0, nVertices);
+      this.gl.TRIANGLE_STRIP, 0, this.nVertices);
+    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+    this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, null);
   }
 }
