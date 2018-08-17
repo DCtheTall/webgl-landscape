@@ -53,7 +53,7 @@ function initSmoothShadingLandscapeFrame(
   });
 }
 
-function initSobelFilter(
+function initEdgeFilter(
   gl: WebGLRenderingContext,
   canvas: HTMLCanvasElement,
 ): RenderFrame {
@@ -78,6 +78,11 @@ function initSobelFilter(
         locationName: 'u_TextureSampler',
         sampler: true,
       },
+      uResolution: {
+        locationName: 'u_Resolution',
+        type: Shader.Types.VECTOR2,
+        data: [canvas.width, canvas.height],
+      },
     },
   });
   return new RenderFrame({
@@ -86,12 +91,13 @@ function initSobelFilter(
     width: canvas.width,
     height: canvas.height,
     nVertices: 4,
+    clearBeforeRender: false,
   });
 }
 
 export interface RenderFrames {
   smoothShadedLandscape: RenderFrame;
-  sobelFilter: RenderFrame;
+  textureFilter: RenderFrame;
 }
 
 export default function getSceneRenderFrames(
@@ -103,8 +109,7 @@ export default function getSceneRenderFrames(
     height: canvas.height,
   });
   return {
-    smoothShadedLandscape:
-      initSmoothShadingLandscapeFrame(gl, camera),
-    sobelFilter: initSobelFilter(gl, canvas),
+    textureFilter: initEdgeFilter(gl, canvas),
+    smoothShadedLandscape: initSmoothShadingLandscapeFrame(gl, camera),
   };
 }

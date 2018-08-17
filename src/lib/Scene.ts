@@ -17,6 +17,6 @@ export default class Scene {
     this.renderFrames.smoothShadedLandscape.render();
     this.gl.bindTexture(
       this.gl.TEXTURE_2D, this.renderFrames.smoothShadedLandscape.texture);
-    this.renderFrames.sobelFilter.render();
+    this.renderFrames.textureFilter.render();
   }
 }
