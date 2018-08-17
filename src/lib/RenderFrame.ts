@@ -1,5 +1,7 @@
+import { vec4 } from 'gl-matrix';
 import Shader from './Shader';
-import Camera from './Camera';
+
+const CLEAR_COLOR = vec4.fromValues(.75, .87, .9, 1);
 
 interface RenderFrameConstructorParams {
   gl: WebGLRenderingContext;
@@ -109,6 +111,8 @@ export default class RenderFrame {
   public render() {
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.frameBuffer);
     this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, this.renderBuffer);
+    this.gl.clearColor.apply(this.gl, CLEAR_COLOR);
+    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     this.gl.viewport(0, 0, this.width, this.height);
     this.shader.useProgram();
     this.shader.sendAttributes();
