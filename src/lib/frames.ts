@@ -3,48 +3,52 @@ import Shader from './Shader';
 import Plane from './Plane';
 import RenderFrame from './RenderFrame';
 
-function initSmoothShadingLandscapeFrame(
+const plane = new Plane();
+const smoothShader = require('../shaders/landscape/fragment/smooth.glsl');
+const celShader = require('../shaders/landscape/fragment/cel.glsl');
+
+function initLandscapeFrame(
   gl: WebGLRenderingContext,
   camera: Camera,
+  fragmentShader: string,
+  samplerValue: number,
 ): RenderFrame {
-  const plane = new Plane();
-  const shader = new Shader({
-    gl,
-    vertexShader: require('../shaders/landscape/vertex.glsl'),
-    fragmentShader: require('../shaders/landscape/fragment.glsl'),
-    attributes: {
-      aPlaneVertex: {
-        locationName: 'a_PlaneVertex',
-        data: plane.getVertices(),
-        type: Shader.Types.VECTOR2,
-      },
-    },
-    uniforms: {
-      uViewMatrix: {
-        locationName: 'u_ViewMatrix',
-        data: <Float32Array>camera.getLookAt(),
-        type: Shader.Types.MATRIX4,
-      },
-      uPerspectiveMatrix: {
-        locationName: 'u_PerspectiveMatrix',
-        data: <Float32Array>camera.getPerspective(),
-        type: Shader.Types.MATRIX4,
-      },
-      uCameraPosition: {
-        locationName: 'u_CameraPosition',
-        data: camera.getPosition(),
-        type: Shader.Types.VECTOR3,
-      },
-      uTime: {
-        locationName: 'u_Time',
-        data: 0,
-        type: Shader.Types.FLOAT,
-      },
-    },
-  });
   return new RenderFrame({
     gl,
-    shader,
+    shader: new Shader({
+      gl,
+      vertexShader: require('../shaders/landscape/vertex.glsl'),
+      fragmentShader,
+      attributes: {
+        aPlaneVertex: {
+          locationName: 'a_PlaneVertex',
+          data: plane.getVertices(),
+          type: Shader.Types.VECTOR2,
+        },
+      },
+      uniforms: {
+        uViewMatrix: {
+          locationName: 'u_ViewMatrix',
+          data: <Float32Array>camera.getLookAt(),
+          type: Shader.Types.MATRIX4,
+        },
+        uPerspectiveMatrix: {
+          locationName: 'u_PerspectiveMatrix',
+          data: <Float32Array>camera.getPerspective(),
+          type: Shader.Types.MATRIX4,
+        },
+        uCameraPosition: {
+          locationName: 'u_CameraPosition',
+          data: camera.getPosition(),
+          type: Shader.Types.VECTOR3,
+        },
+        uTime: {
+          locationName: 'u_Time',
+          data: 0,
+          type: Shader.Types.FLOAT,
+        },
+      },
+    }),
     width: camera.getSceneWidth(),
     height: camera.getSceneHeight(),
     renderToTexture: true,
@@ -74,9 +78,15 @@ function initEdgeFilter(
       },
     },
     uniforms: {
-      uTextureSampler2D: {
-        locationName: 'u_TextureSampler',
-        sampler: true,
+      uTextureSampler0: {
+        locationName: 'u_TextureSampler0',
+        type: Shader.Types.INTEGER,
+        data: 0,
+      },
+      uTextureSampler1: {
+        locationName: 'u_TextureSampler1',
+        type: Shader.Types.INTEGER,
+        data: 1,
       },
       uResolution: {
         locationName: 'u_Resolution',
@@ -97,6 +107,7 @@ function initEdgeFilter(
 
 export interface RenderFrames {
   smoothShadedLandscape: RenderFrame;
+  celShadedLandscape: RenderFrame;
   textureFilter: RenderFrame;
 }
 
@@ -110,6 +121,7 @@ export default function getSceneRenderFrames(
   });
   return {
     textureFilter: initEdgeFilter(gl, canvas),
-    smoothShadedLandscape: initSmoothShadingLandscapeFrame(gl, camera),
+    smoothShadedLandscape: initLandscapeFrame(gl, camera, smoothShader, 0),
+    celShadedLandscape: initLandscapeFrame(gl, camera, celShader, 1),
   };
 }

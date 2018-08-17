@@ -15,8 +15,13 @@ export default class Scene {
 
   public render() {
     this.renderFrames.smoothShadedLandscape.render();
+    this.renderFrames.celShadedLandscape.render();
+    this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(
       this.gl.TEXTURE_2D, this.renderFrames.smoothShadedLandscape.texture);
+    this.gl.activeTexture(this.gl.TEXTURE1);
+    this.gl.bindTexture(
+      this.gl.TEXTURE_2D, this.renderFrames.celShadedLandscape.texture);
     this.renderFrames.textureFilter.render();
   }
 }

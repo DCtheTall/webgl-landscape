@@ -1,6 +1,7 @@
 enum ShaderProgramTypes {
   BOOL,
   FLOAT,
+  INTEGER,
   MATRIX4,
   VECTOR2,
   VECTOR3,
@@ -20,7 +21,6 @@ interface ShaderAttribute extends ShaderValue {
 
 interface ShaderUniform extends ShaderValue {
   location?: WebGLUniformLocation;
-  sampler?: boolean;
 }
 
 
@@ -143,7 +143,6 @@ export default class Shader {
   public sendUniforms() {
     Object.keys(this.uniforms).forEach((key: string) => {
       const uniform = this.uniforms[key];
-      if (uniform.sampler) return;
       switch (uniform.type) {
         case ShaderProgramTypes.BOOL:
           this.gl.uniform1i(
@@ -152,6 +151,11 @@ export default class Shader {
 
         case ShaderProgramTypes.FLOAT:
           this.gl.uniform1f(
+            uniform.location, <number>uniform.data);
+          break;
+
+        case ShaderProgramTypes.INTEGER:
+          this.gl.uniform1i(
             uniform.location, <number>uniform.data);
           break;
 

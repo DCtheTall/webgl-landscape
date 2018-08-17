@@ -12,8 +12,8 @@ varying vec3 v_PlaneVertex;
 varying vec3 v_PlaneNormal;
 varying float v_Time;
 
-#pragma glslify: fragColor = require('../lib/frag-color.glsl');
-#pragma glslify: fog = require('../lib/fog.glsl');
+#pragma glslify: fragColor = require('../../lib/frag-color.glsl');
+#pragma glslify: fog = require('../../lib/fog.glsl');
 
 void main() {
   vec3 lightDirection = normalize(LIGHT_POSITION - v_PlaneVertex);
@@ -21,6 +21,13 @@ void main() {
   vec3 halfwayVector = normalize(lightDirection + viewDirection);
 
   float lambertian = clamp(dot(lightDirection, v_PlaneNormal), 0., 1.);
+  if (lambertian > .7) {
+    lambertian = 1.;
+  } else if (lambertian > .4) {
+    lambertian = .5;
+  } else {
+    lambertian = .2;
+  }
   float specular = clamp(dot(halfwayVector, v_PlaneNormal), 0., 1.);
   specular = pow(specular, 100.);
   specular *= .4;
