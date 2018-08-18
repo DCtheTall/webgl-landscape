@@ -9,18 +9,23 @@ created by superimposing Simplex noise
 of increasing frequency and decreasing amplitude.
 
 The fragments are colored in the shader using
-some Perlin noise for variation.
+some Simplex noise for variation.
 
 It also added a little fog effect to emphasize
 the illusion of depth.
+
+A 3x3 Sobel filter is applied to the smooth-shaded
+scene and then overlayed on top of a cel-shaded
+render of the scene. This gives it a more dynamic,
+graphic look.
 
 ---
 
 ## Back end
 This app just runs a simple Go server which serves the
-public directory as static files.
+public directory as static files. It also logs incoming
+requests using a small logging middleware I wrote.
 
-This project uses [godep](https://github.com/tools/godep) to manage server side dependencies.
 To run the server, run `start.sh`.
 
 ## Front end
