@@ -46,6 +46,11 @@ function initLandscapeFrame(
           data: 0,
           type: Shader.Types.FLOAT,
         },
+        uLightPosition: {
+          locationName: 'u_LightPosition',
+          type: Shader.Types.VECTOR3,
+          data: [-10., 50., -30.],
+        },
       },
     }),
     width: camera.getSceneWidth(),
@@ -62,8 +67,8 @@ function initEdgeFilter(
 ): RenderFrame {
   const shader = new Shader({
     gl,
-    vertexShader: require('../shaders/sobel/vertex.glsl'),
-    fragmentShader: require('../shaders/sobel/fragment.glsl'),
+    vertexShader: require('../shaders/filter/vertex.glsl'),
+    fragmentShader: require('../shaders/filter/fragment.glsl'),
     attributes: {
       aTextureCoord: {
         locationName: 'a_TextureCoord',
