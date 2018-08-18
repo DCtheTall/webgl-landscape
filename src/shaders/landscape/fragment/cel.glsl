@@ -1,6 +1,6 @@
 precision mediump float;
 
-const vec3 LIGHT_POSITION = vec3(5., 30., -50.);
+const vec3 LIGHT_POSITION = vec3(-10., 30., -20.);
 const vec3 DIFFUSE_LIGHT_COLOR = vec3(.75, .7, .5);
 const vec3 AMBIENT_COLOR = vec3(.2, .2, .3);
 const vec3 SPECULAR_COLOR = vec3(.8, .8, .7);
@@ -22,9 +22,9 @@ void main() {
 
   float lambertian = clamp(dot(lightDirection, v_PlaneNormal), 0., 1.);
   if (lambertian > .7) {
-    lambertian = .7;
-  } else {
-    lambertian = .3;
+    lambertian = clamp(lambertian, .7, .8);
+  } else if (lambertian > .5) {
+    lambertian = .5;
   }
   float specular = clamp(dot(halfwayVector, v_PlaneNormal), 0., 1.);
   specular = pow(specular, 100.);
@@ -32,7 +32,7 @@ void main() {
 
   vec3 lightColor = AMBIENT_COLOR;
   lightColor += (lambertian * DIFFUSE_LIGHT_COLOR);
-  lightColor += (specular * SPECULAR_COLOR);
+  // lightColor += (specular * SPECULAR_COLOR);
 
   vec3 color = lightColor * fragColor(v_PlaneVertex, v_PlaneNormal, 10., v_Time);
 

@@ -18,9 +18,9 @@ float octaveSimplex(vec2 vertex, float time) {
   float frequency = 1.;
   float amplitude = 1.;
   float maxValue = 0.;
-  vec2 dy = vec2(0., time);
+  vec2 dz = vec2(0., time);
   for (int i = 0; i < OCTAVES; i++) {
-    total += amplitude * simplex(frequency * (vertex + dy) / 50.);
+    total += amplitude * simplex(frequency * (vertex + dz) / 50.);
     maxValue += amplitude;
     amplitude *= PERSISTANCE;
     frequency *= 2.;

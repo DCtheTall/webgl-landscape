@@ -12,8 +12,8 @@ export default class Scene {
 
   constructor(canvas: HTMLCanvasElement) {
     this.gl =
-      canvas.getContext('webgl')
-      || canvas.getContext('experimental-webgl');
+      canvas.getContext('webgl', { preserveDrawingBuffer: true })
+      || canvas.getContext('experimental-webgl', { preserveDrawingBuffer: true });
     this.gl.enable(this.gl.DEPTH_TEST);
     this.gl.depthFunc(this.gl.LEQUAL);
     this.renderFrames = getSceneRenderFrames(this.gl, canvas);

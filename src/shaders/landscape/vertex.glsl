@@ -14,8 +14,8 @@ varying float v_Time;
 
 void main() {
   float amp = 15.;
-  vec2 dx = vec2(.01, 0.);
-  vec2 dz = vec2(0., .01);
+  vec2 dx = vec2(.001, 0.);
+  vec2 dz = vec2(0., .001);
   vec3 vx = vec3(a_PlaneVertex.x + .1, amp * noise(a_PlaneVertex + dx, u_Time), a_PlaneVertex.y);
   vec3 vz = vec3(a_PlaneVertex.x, amp * noise(a_PlaneVertex + dz, u_Time), a_PlaneVertex.y + .1);
   v_PlaneVertex = vec3(a_PlaneVertex.x, amp * noise(a_PlaneVertex, u_Time), a_PlaneVertex.y);

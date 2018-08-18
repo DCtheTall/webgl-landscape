@@ -111,28 +111,30 @@ export default class Shader {
 
   private sendVectorAttribute(
     dimension: number,
+    attribute: ShaderAttribute,
     {
-      buffer,
-      location,
-      data,
-    }: ShaderAttribute,
+      firstRender = true,
+    } = {},
   ): void {
+    const { data, buffer, location } = attribute;
     if (typeof data === 'number')
       throw new Error('You must use number[] type for data for vector attribute.');
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
+    this.gl.enableVertexAttribArray(location);
     this.gl.vertexAttribPointer(
       location, dimension, this.gl.FLOAT, false, 0, 0);
-    this.gl.enableVertexAttribArray(location);
-    this.gl.bufferData(
-      this.gl.ARRAY_BUFFER, new Float32Array(<number[]>data), this.gl.STATIC_DRAW);
+    if (firstRender) {
+      this.gl.bufferData(
+        this.gl.ARRAY_BUFFER, new Float32Array(<number[]>data), this.gl.STATIC_DRAW);
+    }
   }
 
-  public sendAttributes() {
+  public sendAttributes(firstRender: boolean) {
     Object.keys(this.attributes).forEach((key: string) => {
       const attribute = this.attributes[key];
       switch (attribute.type) {
         case ShaderProgramTypes.VECTOR2:
-          this.sendVectorAttribute(2, attribute);
+          this.sendVectorAttribute(2, attribute, { firstRender });
           break;
         default:
           throw new Error(`Invalid type provided for attribute ${key} provided.`);

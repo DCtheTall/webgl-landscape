@@ -112,7 +112,8 @@ export default class RenderFrame {
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
   }
 
-  public render(firstRender: boolean) {
+  public render(firstRender = true) {
+    this.shader.useProgram();
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.frameBuffer);
     this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, this.renderBuffer);
     if (this.clearBeforeRender) {
@@ -120,8 +121,7 @@ export default class RenderFrame {
       this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
     }
     this.gl.viewport(0, 0, this.width, this.height);
-    this.shader.useProgram();
-    this.shader.sendAttributes();
+    this.shader.sendAttributes(firstRender);
     this.shader.sendUniforms();
     this.gl.drawArrays(
       this.gl.TRIANGLE_STRIP, 0, this.nVertices);
