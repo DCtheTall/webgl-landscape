@@ -21,6 +21,7 @@
   "homepage": "https://github.com/DCtheTall/webgl-landscape#readme",
   "dependencies": {
     "@types/gl-matrix": "^2.4.1",
+    "@types/node": "^10.7.1",
     "gl-matrix": "^2.7.1",
     "glsl-canny-edge-detection": "^1.0.6",
     "glsl-noise": "0.0.0",
