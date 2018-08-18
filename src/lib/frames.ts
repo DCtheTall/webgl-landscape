@@ -11,7 +11,6 @@ function initLandscapeFrame(
   gl: WebGLRenderingContext,
   camera: Camera,
   fragmentShader: string,
-  samplerValue: number,
 ): RenderFrame {
   return new RenderFrame({
     gl,
@@ -121,7 +120,7 @@ export default function getSceneRenderFrames(
   });
   return {
     textureFilter: initEdgeFilter(gl, canvas),
-    smoothShadedLandscape: initLandscapeFrame(gl, camera, smoothShader, 0),
-    celShadedLandscape: initLandscapeFrame(gl, camera, celShader, 1),
+    smoothShadedLandscape: initLandscapeFrame(gl, camera, smoothShader),
+    celShadedLandscape: initLandscapeFrame(gl, camera, celShader),
   };
 }

@@ -1,5 +1,5 @@
-const MAX_PLANE_POSITION = 100;
-const DEFAULT_RESOLUTION = 500;
+const MAX_PLANE_POSITION = 64;
+const DEFAULT_RESOLUTION = 128;
 
 export default class Plane {
   private vertices: number[];

@@ -112,7 +112,7 @@ export default class RenderFrame {
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
   }
 
-  public render() {
+  public render(firstRender: boolean) {
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.frameBuffer);
     this.gl.bindRenderbuffer(this.gl.RENDERBUFFER, this.renderBuffer);
     if (this.clearBeforeRender) {

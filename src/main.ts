@@ -7,5 +7,5 @@ import Scene from './lib/Scene';
   canvas.height = window.innerHeight;
 
   const scene = new Scene(canvas);
-  scene.render();
+  scene.render(true);
 })();

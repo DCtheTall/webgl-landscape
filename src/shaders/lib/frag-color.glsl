@@ -15,7 +15,7 @@ float rand(vec2 v){
 
 vec3 fragColor(vec3 vertex, vec3 normal, float amp, float time) {
   vec2 dy = vec2(0., time);
-  float y = vertex.y + (perlin((vertex.xz + dy) * 20.) * vertex.y / 3.);
+  float y = vertex.y + (perlin((vertex.xz + dy) * 20.) * vertex.y / 5.);
 
   if (y < -amp / 2. && dot(normal, vec3(0., 1., 0.)) > .3) return BASE_GREEN;
   if (y < -amp / 5. && dot(normal, vec3(0., 1., 0.)) > .3) return GREEN;

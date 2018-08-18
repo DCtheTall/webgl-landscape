@@ -22,11 +22,9 @@ void main() {
 
   float lambertian = clamp(dot(lightDirection, v_PlaneNormal), 0., 1.);
   if (lambertian > .7) {
-    lambertian = 1.;
-  } else if (lambertian > .4) {
-    lambertian = .5;
+    lambertian = .7;
   } else {
-    lambertian = .2;
+    lambertian = .3;
   }
   float specular = clamp(dot(halfwayVector, v_PlaneNormal), 0., 1.);
   specular = pow(specular, 100.);

@@ -14,8 +14,8 @@ void main() {
     u_TextureSampler0, v_TextureCoord, u_Resolution));
   vec3 color = texture2D(u_TextureSampler1, v_TextureCoord).xyz;
   float edge = cannyEdgeDetection(
-    u_TextureSampler0, v_TextureCoord, u_Resolution, .2, .1);
-  color -= (.4 * (1. - grad) * vec3(grad));
-  color -= .15 * vec3(edge);
+    u_TextureSampler0, v_TextureCoord, u_Resolution, .4, .2);
+  color -= .4 * vec3(grad);
+  color -= .2 * vec3(edge);
   gl_FragColor = vec4(color, 1.);
 }

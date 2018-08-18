@@ -124,7 +124,7 @@ export default class Shader {
       location, dimension, this.gl.FLOAT, false, 0, 0);
     this.gl.enableVertexAttribArray(location);
     this.gl.bufferData(
-      this.gl.ARRAY_BUFFER, new Float32Array(<number[]>data), this.gl.DYNAMIC_DRAW);
+      this.gl.ARRAY_BUFFER, new Float32Array(<number[]>data), this.gl.STATIC_DRAW);
   }
 
   public sendAttributes() {
