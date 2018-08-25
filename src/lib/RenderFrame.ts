@@ -1,7 +1,5 @@
-import { vec4 } from 'gl-matrix';
+import { CLEAR_COLOR } from './constants';
 import Shader from './Shader';
-
-const CLEAR_COLOR = vec4.fromValues(.75, .87, .9, 1);
 
 interface RenderFrameConstructorParams {
   gl: WebGLRenderingContext;

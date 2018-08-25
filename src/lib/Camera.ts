@@ -1,8 +1,6 @@
 import { vec3, mat4 } from 'gl-matrix';
 
-const UP = vec3.fromValues(0, 1, 0);
-const POSITION = vec3.fromValues(0, 15, 0);
-const LOOK_AT = vec3.fromValues(0, 10, -10);
+import { CAMERA_LOOK_AT, CAMERA_POSITION, CAMERA_UP } from './constants';
 
 interface CameraConstructorParams {
   width: number;
@@ -24,9 +22,9 @@ export default class Camera {
   constructor({
     height,
     width,
-    at = LOOK_AT,
-    position = POSITION,
-    up = UP,
+    at = CAMERA_LOOK_AT,
+    position = CAMERA_POSITION,
+    up = CAMERA_UP,
   }: CameraConstructorParams) {
     this.height = height;
     this.width = width;

@@ -7,7 +7,6 @@ enum ShaderProgramTypes {
   VECTOR3,
 }
 
-
 interface ShaderValue {
   locationName: string;
   type?: ShaderProgramTypes;

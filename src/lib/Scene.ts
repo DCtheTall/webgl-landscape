@@ -1,14 +1,14 @@
-import getSceneRenderFrames, { RenderFrames } from './frames';
-
-const FRAME_RATE = 30;
+import { FRAME_RATE } from './constants';
+import RenderFrame from './RenderFrame';
 
 export default class Scene {
   private gl: WebGLRenderingContext;
-  private renderFrames: RenderFrames;
 
   private lastRender: number;
   private firstRender: number;
   private rendering: boolean;
+
+  private renderFrames: { [index: string]: RenderFrame };
 
   constructor(canvas: HTMLCanvasElement) {
     this.gl =
@@ -16,10 +16,21 @@ export default class Scene {
       || canvas.getContext('experimental-webgl', { preserveDrawingBuffer: true });
     this.gl.enable(this.gl.DEPTH_TEST);
     this.gl.depthFunc(this.gl.LEQUAL);
-    this.renderFrames = getSceneRenderFrames(this.gl, canvas);
+    this.renderFrames = {};
   }
 
-  public render(animate = false) {
+  public setRenderFrame(
+    key: string,
+    callback: (gl: WebGLRenderingContext) => RenderFrame,
+  ) {
+    this.renderFrames[key] = callback(this.gl);
+  }
+
+  public getRenderFrame(key: string): RenderFrame {
+    return this.renderFrames[key];
+  }
+
+  public render(animate = false, renderCallback: (firstRender: boolean) => void) {
     const now = Date.now();
     if (!this.lastRender) this.firstRender = now;
     if (
@@ -29,27 +40,18 @@ export default class Scene {
         && ((now - this.lastRender) < (1000 / FRAME_RATE))
       )
     ) {
-      if (animate) window.requestAnimationFrame(() => this.render(true));
+      if (animate)
+        window.requestAnimationFrame(
+          () => this.render(true, renderCallback));
       return;
     }
     this.rendering = true;
     const time = animate ? -(now - this.firstRender) / 100 : 0;
-
-    this.renderFrames.smoothShadedLandscape.shader.setUniformData('uTime', time);
-    this.renderFrames.celShadedLandscape.shader.setUniformData('uTime', time);
-    this.renderFrames.smoothShadedLandscape.render(!this.lastRender);
-    this.renderFrames.celShadedLandscape.render(!this.lastRender);
-
-    this.gl.activeTexture(this.gl.TEXTURE0);
-    this.gl.bindTexture(
-      this.gl.TEXTURE_2D, this.renderFrames.smoothShadedLandscape.texture);
-    this.gl.activeTexture(this.gl.TEXTURE1);
-    this.gl.bindTexture(
-      this.gl.TEXTURE_2D, this.renderFrames.celShadedLandscape.texture);
-    this.renderFrames.textureFilter.render(!this.lastRender);
-
+    renderCallback(!this.lastRender);
     this.rendering = false;
     this.lastRender = now;
-    if (animate) window.requestAnimationFrame(() => this.render(true));
+    if (animate)
+      window.requestAnimationFrame(
+        () => this.render(true, renderCallback));
   }
 }
