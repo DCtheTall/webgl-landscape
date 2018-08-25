@@ -12,6 +12,6 @@ void main() {
   float grad = length(sobelFilter(
     u_TextureSampler0, v_TextureCoord, u_Resolution));
   vec3 color = texture2D(u_TextureSampler1, v_TextureCoord).xyz;
-  color -= 3. * vec3(pow(grad, 1.15));
+  color -= .25 * vec3(pow(grad, 1.5));
   gl_FragColor = vec4(color, 1.);
 }

@@ -55,7 +55,7 @@ function initLandscapeFrame(
         uDiffuseLightColor: {
           locationName: 'u_DiffuseLightColor',
           type: Shader.Types.VECTOR3,
-          data: [.85, .8, .7],
+          data: [.95, .9, .8],
         },
         uAmbientLightColor: {
           locationName: 'u_AmbientLightColor',
