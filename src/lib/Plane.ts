@@ -1,8 +1,9 @@
-const MAX_PLANE_POSITION = 80;
-const DEFAULT_RESOLUTION = 512;
-
-const SIN_60_DEG = (3 ** .5) / 2;
-const COS_60_DEG = .5;
+import {
+  MAX_PLANE_POSITION,
+  DEFAULT_RESOLUTION,
+  COS_60_DEG,
+  SIN_60_DEG,
+} from './constants';
 
 export default class Plane {
   private vertices: number[];

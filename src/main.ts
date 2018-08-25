@@ -1,5 +1,10 @@
+import { mat4 } from 'gl-matrix';
 
-import { SILHOUETTE_VERTEX_SHADER, SILHOUETTE_FRAGMENT_SHADER } from './lib/shaders';
+import {
+  SILHOUETTE_VERTEX_SHADER,
+  SILHOUETTE_FRAGMENT_SHADER,
+} from './lib/shaders';
+
 import Scene from './lib/Scene';
 import Camera from './lib/Camera';
 import RenderFrame from './lib/RenderFrame';
@@ -31,6 +36,13 @@ function initSilhouetterFrame(
           data: camera.getLookAt(),
           type: Shader.Types.MATRIX4,
         },
+        uViewInverseTranspose: {
+          locationName: 'u_ViewInverseTranspose',
+          data: mat4.transpose(
+            mat4.create(),
+            mat4.invert(mat4.create(), camera.getLookAt())),
+          type: Shader.Types.MATRIX4,
+        },
         uPerspectiveMatrix: {
           locationName: 'u_PerspectiveMatrix',
           data: camera.getPerspective(),
@@ -48,8 +60,13 @@ function initSilhouetterFrame(
         },
         uSilhouetteEpsilon: {
           locationName: 'u_SilhouetteEpsilon',
-          data: 0.5,
+          data: .6,
           type: Shader.Types.FLOAT,
+        },
+        uTextureSampler: {
+          locationName: 'u_TextureSampler',
+          data: 0,
+          type: Shader.Types.INTEGER,
         },
       },
     }),
@@ -70,10 +87,18 @@ function initSilhouetterFrame(
   });
 
   const scene = new Scene(canvas);
+  const image =
+    <HTMLImageElement>document.getElementById('brush-texture');
+  scene.setImageTexture('brush', image);
   scene.setRenderFrame(
     'silhouette', initSilhouetterFrame.bind(null, camera));
+
   scene.render(false, (firstRender: boolean) => {
     const silhouette = scene.getRenderFrame('silhouette');
+    const brushTexture = scene.getImageTexture('brush');
+    scene.gl.activeTexture(scene.gl.TEXTURE0);
+    scene.gl.bindTexture(
+      scene.gl.TEXTURE_2D, brushTexture);
     silhouette.render(firstRender);
   });
 })();
