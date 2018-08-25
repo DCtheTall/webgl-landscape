@@ -1,7 +1,5 @@
 precision mediump float;
 
-const vec3 FOG_COLOR = vec3(.75, .87, .9);
-
 uniform vec3 u_CameraPosition;
 
 uniform vec3 u_LightPosition;
