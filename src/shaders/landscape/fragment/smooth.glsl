@@ -1,12 +1,13 @@
 precision mediump float;
 
-const vec3 DIFFUSE_LIGHT_COLOR = vec3(.85, .8, .7);
-const vec3 AMBIENT_COLOR = vec3(.2, .2, .3);
-const vec3 SPECULAR_COLOR = vec3(.8, .8, .7);
 const vec3 FOG_COLOR = vec3(.75, .87, .9);
 
 uniform vec3 u_CameraPosition;
+
 uniform vec3 u_LightPosition;
+uniform vec3 u_AmbientLightColor;
+uniform vec3 u_DiffuseLightColor;
+uniform vec3 u_SpecularLightColor;
 
 varying vec3 v_PlaneVertex;
 varying vec3 v_PlaneNormal;
@@ -21,12 +22,13 @@ void main() {
 
   float lambertian = clamp(dot(lightDirection, v_PlaneNormal), 0., 1.);
   float specular = clamp(dot(halfwayVector, v_PlaneNormal), 0., 1.);
+  lambertian = pow(lambertian, .5);
   specular = pow(specular, 100.);
   specular *= .4;
 
-  vec3 lightColor = AMBIENT_COLOR;
-  lightColor += (lambertian * DIFFUSE_LIGHT_COLOR);
-  lightColor += (specular * SPECULAR_COLOR);
+  vec3 lightColor = u_AmbientLightColor;
+  lightColor += (lambertian * u_DiffuseLightColor);
+  lightColor += (specular * u_SpecularLightColor);
 
   vec3 color = lightColor * vec3(1.);
 

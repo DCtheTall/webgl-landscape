@@ -3,9 +3,10 @@ import Shader from './Shader';
 import Plane from './Plane';
 import RenderFrame from './RenderFrame';
 
+const CEL_SHADER = require('../shaders/landscape/fragment/cel.glsl');
+const SMOOTH_SHADER = require('../shaders/landscape/fragment/smooth.glsl');
+
 const plane = new Plane();
-const smoothShader = require('../shaders/landscape/fragment/smooth.glsl');
-const celShader = require('../shaders/landscape/fragment/cel.glsl');
 
 function initLandscapeFrame(
   gl: WebGLRenderingContext,
@@ -50,6 +51,21 @@ function initLandscapeFrame(
           locationName: 'u_LightPosition',
           type: Shader.Types.VECTOR3,
           data: [-10., 50., -30.],
+        },
+        uDiffuseLightColor: {
+          locationName: 'u_DiffuseLightColor',
+          type: Shader.Types.VECTOR3,
+          data: [.85, .8, .7],
+        },
+        uAmbientLightColor: {
+          locationName: 'u_AmbientLightColor',
+          type: Shader.Types.VECTOR3,
+          data: [.2, .2, .3],
+        },
+        uSpecularLightColor: {
+          locationName: 'u_SpecularLightColor',
+          type: Shader.Types.VECTOR3,
+          data: [.3, .3, .2],
         },
       },
     }),
@@ -125,7 +141,7 @@ export default function getSceneRenderFrames(
   });
   return {
     textureFilter: initEdgeFilter(gl, canvas),
-    smoothShadedLandscape: initLandscapeFrame(gl, camera, smoothShader),
-    celShadedLandscape: initLandscapeFrame(gl, camera, celShader),
+    smoothShadedLandscape: initLandscapeFrame(gl, camera, SMOOTH_SHADER),
+    celShadedLandscape: initLandscapeFrame(gl, camera, CEL_SHADER),
   };
 }
