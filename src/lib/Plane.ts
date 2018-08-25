@@ -1,5 +1,8 @@
-const MAX_PLANE_POSITION = 100;
+const MAX_PLANE_POSITION = 80;
 const DEFAULT_RESOLUTION = 512;
+
+const SIN_60_DEG = (3 ** .5) / 2;
+const COS_60_DEG = .5;
 
 export default class Plane {
   private vertices: number[];
@@ -7,9 +10,9 @@ export default class Plane {
   constructor() {
     const step = MAX_PLANE_POSITION / DEFAULT_RESOLUTION;
     const points = Array<number>(0);
-    for (let x = -MAX_PLANE_POSITION; x < MAX_PLANE_POSITION; x += step)
-      for (let y = -MAX_PLANE_POSITION; y <= 0; y += step) {
-        if (Math.round(x / step) % 2) {
+    for (let x = -MAX_PLANE_POSITION; x < MAX_PLANE_POSITION; x += step * COS_60_DEG)
+      for (let y = -MAX_PLANE_POSITION; y <= 0; y += step * SIN_60_DEG) {
+        if (Math.round(x / step / COS_60_DEG) % 2) {
           points.push(x, -MAX_PLANE_POSITION - y);
           points.push(x + step, -MAX_PLANE_POSITION - y);
         } else {
