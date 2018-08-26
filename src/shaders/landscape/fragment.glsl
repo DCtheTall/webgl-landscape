@@ -24,16 +24,27 @@ vec3 applyBrushTexture() {
   return texColor;
 }
 
-vec3 applyInteriorShading() {
+vec3 applyInteriorShading(vec3 brushTextureColor) {
   vec3 lightDirection = normalize(u_LightPosition - v_PlaneVertex);
   float lambertian = 2. * clamp(dot(lightDirection, v_PlaneNormal), 0.1, .5);
-  vec2 texCoord = vec2(lambertian, .5);
+  vec2 texCoord = vec2(
+    clamp(
+      lambertian * (
+        .3 * brushTextureColor.x
+        + .59 * brushTextureColor.y
+        + .11 * brushTextureColor.z
+      ),
+      0.,
+      1.
+    ),
+    .5
+  );
   return texture2D(u_ShadingTextureSampler, texCoord).xyz;
 }
 
 void main() {
   vec3 brushTextureColor = applyBrushTexture();
-  vec3 shadingColor = applyInteriorShading();
+  vec3 shadingColor = applyInteriorShading(brushTextureColor);
   vec3 pixelColor = brushTextureColor * shadingColor;
   vec4 colorAfterFog = interpolateFog(
     u_CameraPosition,

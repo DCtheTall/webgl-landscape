@@ -174,7 +174,7 @@ function initPaperLayer(
   scene.setRenderFrame(
     'paper', initPaperLayer.bind(null, canvas));
   scene.render({
-    animate: false,
+    animate: true,
     draw({ animate, firstRender }) {
       const time = scene.getTimeSinceFirstRender(animate);
       const brushTexture = scene.getImageTexture('brush');

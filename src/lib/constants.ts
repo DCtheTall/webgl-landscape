@@ -4,8 +4,8 @@ export const CLEAR_COLOR = [1, 1, 1, 1];
 export const FRAME_RATE = 30;
 
 export const CAMERA_UP = vec3.fromValues(0, 1, 0);
-export const CAMERA_POSITION = vec3.fromValues(0, 10, 0);
-export const CAMERA_LOOK_AT = vec3.fromValues(0, 5, -10);
+export const CAMERA_POSITION = vec3.fromValues(0, 12, 0);
+export const CAMERA_LOOK_AT = vec3.fromValues(0, 8, -10);
 
 export const MAX_PLANE_POSITION = 80;
 export const DEFAULT_RESOLUTION = 512;
