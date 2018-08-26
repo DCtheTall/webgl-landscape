@@ -14,7 +14,7 @@ interface ShaderValue {
   buffer?: WebGLBuffer;
 }
 
-interface ShaderAttribute extends ShaderValue {
+export interface ShaderAttribute extends ShaderValue {
   location?: number;
 }
 

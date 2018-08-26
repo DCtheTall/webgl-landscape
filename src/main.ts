@@ -1,28 +1,29 @@
 import { mat4 } from 'gl-matrix';
 
 import {
-  SILHOUETTE_VERTEX_SHADER,
-  SILHOUETTE_FRAGMENT_SHADER,
+  VERTEX_SHADER,
+  FRAGMENT_SHADER,
 } from './lib/shaders';
+import { CLEAR_COLOR } from './lib/constants';
 
 import Scene from './lib/Scene';
 import Camera from './lib/Camera';
 import RenderFrame from './lib/RenderFrame';
-import Shader from './lib/Shader';
+import Shader, { ShaderAttribute } from './lib/Shader';
 import Plane from './lib/Plane';
 
 const plane = new Plane();
 
-function initSilhouetterFrame(
+function initLandscapeFrame(
   camera: Camera,
   gl: WebGLRenderingContext,
-) {
+): RenderFrame {
   return new RenderFrame({
     gl,
     shader: new Shader({
       gl,
-      vertexShader: SILHOUETTE_VERTEX_SHADER,
-      fragmentShader: SILHOUETTE_FRAGMENT_SHADER,
+      vertexShader: VERTEX_SHADER,
+      fragmentShader: FRAGMENT_SHADER,
       attributes: {
         aPlaneVertex: {
           locationName: 'a_PlaneVertex',
@@ -63,10 +64,25 @@ function initSilhouetterFrame(
           data: .6,
           type: Shader.Types.FLOAT,
         },
-        uTextureSampler: {
-          locationName: 'u_TextureSampler',
+        uBrushTextureSampler: {
+          locationName: 'u_BrushTextureSampler',
           data: 0,
           type: Shader.Types.INTEGER,
+        },
+        uShadingTextureSampler: {
+          locationName: 'u_ShadingTextureSampler',
+          data: 1,
+          type: Shader.Types.INTEGER,
+        },
+        uLightPosition: {
+          locationName: 'u_LightPosition',
+          data: [0, 50, -20],
+          type: Shader.Types.VECTOR3,
+        },
+        uFogColor: {
+          locationName: 'u_FogColor',
+          data: CLEAR_COLOR.slice(0, 3),
+          type: Shader.Types.VECTOR3,
         },
       },
     }),
@@ -87,18 +103,13 @@ function initSilhouetterFrame(
   });
 
   const scene = new Scene(canvas);
-  const image =
+  const brushTexImg =
     <HTMLImageElement>document.getElementById('brush-texture');
-  scene.setImageTexture('brush', image);
+  const shadingTexImg =
+    <HTMLImageElement>document.getElementById('shading-texture');
+  scene.setImageTexture('brush', brushTexImg);
+  scene.setImageTexture('shading', shadingTexImg);
   scene.setRenderFrame(
-    'silhouette', initSilhouetterFrame.bind(null, camera));
-
-  scene.render(false, (firstRender: boolean) => {
-    const silhouette = scene.getRenderFrame('silhouette');
-    const brushTexture = scene.getImageTexture('brush');
-    scene.gl.activeTexture(scene.gl.TEXTURE0);
-    scene.gl.bindTexture(
-      scene.gl.TEXTURE_2D, brushTexture);
-    silhouette.render(firstRender);
-  });
+    'landscape', initLandscapeFrame.bind(null, camera));
+  scene.render(true);
 })();

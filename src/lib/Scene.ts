@@ -59,7 +59,7 @@ export default class Scene {
     this.renderFrames[key] = callback(this.gl);
   }
 
-  public render(animate = false, renderCallback: (firstRender: boolean) => void) {
+  public render(animate = false) {
     const now = Date.now();
     if (!this.lastRender) this.firstRender = now;
     if (
@@ -71,16 +71,26 @@ export default class Scene {
     ) {
       if (animate)
         window.requestAnimationFrame(
-          () => this.render(true, renderCallback));
+          () => this.render(true));
       return;
     }
     this.rendering = true;
     const time = animate ? -(now - this.firstRender) / 100 : 0;
-    renderCallback(!this.lastRender);
+    const landscape = this.getRenderFrame('landscape');
+    const brushTexture = this.getImageTexture('brush');
+    const shadingTexture = this.getImageTexture('shading');
+    landscape.shader.setUniformData('uTime', time);
+    this.gl.activeTexture(this.gl.TEXTURE0);
+    this.gl.bindTexture(
+      this.gl.TEXTURE_2D, brushTexture);
+    this.gl.activeTexture(this.gl.TEXTURE1);
+    this.gl.bindTexture(
+      this.gl.TEXTURE_2D, shadingTexture);
+    landscape.render(!this.lastRender);
     this.rendering = false;
     this.lastRender = now;
     if (animate)
       window.requestAnimationFrame(
-        () => this.render(true, renderCallback));
+        () => this.render(true));
   }
 }

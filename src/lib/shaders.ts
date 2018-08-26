@@ -1,2 +1,5 @@
-export const SILHOUETTE_VERTEX_SHADER = require('../shaders/silhouette/vertex.glsl');
-export const SILHOUETTE_FRAGMENT_SHADER = require('../shaders/silhouette/fragment.glsl');
+export const VERTEX_SHADER =
+  require('../shaders/vertex.glsl');
+
+export const FRAGMENT_SHADER =
+  require('../shaders/fragment.glsl');
