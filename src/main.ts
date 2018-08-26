@@ -15,7 +15,7 @@ import {
 import Scene from './lib/Scene';
 import Camera from './lib/Camera';
 import RenderFrame from './lib/RenderFrame';
-import Shader, { ShaderAttribute } from './lib/Shader';
+import Shader from './lib/Shader';
 import Plane from './lib/Plane';
 
 const plane = new Plane();

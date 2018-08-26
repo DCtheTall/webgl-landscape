@@ -1,5 +1,5 @@
 ![alt text](/screenshot.png)
-# WebGL Landscape
+# Sumi-e WebGL Landscape
 
 [Live Demo](https://dcthetall-webgl-landscape.herokuapp.com)
 
@@ -8,16 +8,13 @@ landscape using WebGL. It uses fractal noise
 created by superimposing Simplex noise
 of increasing frequency and decreasing amplitude.
 
-The fragments are colored in the shader using
-some Simplex noise for variation.
+The generated mountain range is then rendered using
+a method developed to mimick the style of Japanese
+Sumi-e paintings. The method is an implementation
+of the model discussed in [this paper](http://www.myeglab.com/Content/sumi_e_painting.pdf).
 
 It also added a little fog effect to emphasize
 the illusion of depth.
-
-A 3x3 Sobel filter is applied to the smooth-shaded
-scene and then overlayed on top of a cel-shaded
-render of the scene. This gives it a more dynamic,
-graphic look.
 
 ---
 
