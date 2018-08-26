@@ -10,7 +10,7 @@ varying vec3 v_PlaneVertex;
 varying vec3 v_PlaneNormal;
 varying mat4 v_ViewMatrix;
 
-#pragma glslify: noise = require('./lib/octave-simplex.glsl');
+#pragma glslify: noise = require('../lib/octave-simplex.glsl');
 
 void main() {
   float amp = 15.;

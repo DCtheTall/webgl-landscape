@@ -12,3 +12,6 @@ export const DEFAULT_RESOLUTION = 512;
 
 export const SIN_60_DEG = (3 ** .5) / 2;
 export const COS_60_DEG = .5;
+
+export const FULL_VIEW_PLANE_VERTICES = [-1, 1, -1, -1, 1, 1, 1, -1];
+export const FULL_PLANE_VIEW_TEX_COORDS = [0, 1, 0, 0, 1, 1, 1, 0];

@@ -1,10 +1,16 @@
 import { mat4 } from 'gl-matrix';
 
 import {
-  VERTEX_SHADER,
-  FRAGMENT_SHADER,
+  LANDSCAPE_VERTEX_SHADER,
+  LANDSCAPE_FRAGMENT_SHADER,
+  PAPER_VERTEX_SHADER,
+  PAPER_FRAGMENT_SHADER,
 } from './lib/shaders';
-import { CLEAR_COLOR } from './lib/constants';
+import {
+  CLEAR_COLOR,
+  FULL_VIEW_PLANE_VERTICES,
+  FULL_PLANE_VIEW_TEX_COORDS,
+} from './lib/constants';
 
 import Scene from './lib/Scene';
 import Camera from './lib/Camera';
@@ -20,10 +26,15 @@ function initLandscapeFrame(
 ): RenderFrame {
   return new RenderFrame({
     gl,
+    width: camera.getSceneWidth(),
+    height: camera.getSceneHeight(),
+    nVertices: plane.getVertices().length / 2,
+    useRenderBuffer: true,
+    renderToTexture: true,
     shader: new Shader({
       gl,
-      vertexShader: VERTEX_SHADER,
-      fragmentShader: FRAGMENT_SHADER,
+      vertexShader: LANDSCAPE_VERTEX_SHADER,
+      fragmentShader: LANDSCAPE_FRAGMENT_SHADER,
       attributes: {
         aPlaneVertex: {
           locationName: 'a_PlaneVertex',
@@ -81,19 +92,70 @@ function initLandscapeFrame(
         },
         uFogColor: {
           locationName: 'u_FogColor',
-          data: CLEAR_COLOR.slice(0, 3),
-          type: Shader.Types.VECTOR3,
+          data: CLEAR_COLOR,
+          type: Shader.Types.VECTOR4,
         },
       },
     }),
-    width: camera.getSceneWidth(),
-    height: camera.getSceneHeight(),
-    nVertices: plane.getVertices().length / 2,
+  });
+}
+
+function initPaperLayer(
+  canvas: HTMLCanvasElement,
+  gl: WebGLRenderingContext,
+) {
+  return new RenderFrame({
+    gl,
+    width: canvas.width,
+    height: canvas.height,
+    nVertices: 4,
+    clearBeforeRender: false,
+    shader: new Shader({
+      gl,
+      vertexShader: PAPER_VERTEX_SHADER,
+      fragmentShader: PAPER_FRAGMENT_SHADER,
+      attributes: {
+        aTextureCoord: {
+          locationName: 'a_TextureCoord',
+          type: Shader.Types.VECTOR2,
+          data: FULL_PLANE_VIEW_TEX_COORDS,
+        },
+        aVertexPosition: {
+          locationName: 'a_VertexPosition',
+          type: Shader.Types.VECTOR2,
+          data: FULL_VIEW_PLANE_VERTICES,
+        },
+      },
+      uniforms: {
+        uResolution: {
+          locationName: 'u_Resolution',
+          type: Shader.Types.VECTOR2,
+          data: [canvas.width, canvas.height],
+        },
+        uLandscapeSampler: {
+          locationName: 'u_LandscapeSampler',
+          type: Shader.Types.INTEGER,
+          data: 0,
+        },
+        uPaperTextureSampler: {
+          locationName: 'u_PaperTextureSampler',
+          type: Shader.Types.INTEGER,
+          data: 1,
+        },
+      },
+    }),
   });
 }
 
 (function main() {
   const canvas = <HTMLCanvasElement>document.getElementById('canvas');
+  const brushTexImg =
+    <HTMLImageElement>document.getElementById('brush-texture');
+  const shadingTexImg =
+    <HTMLImageElement>document.getElementById('shading-texture');
+  const paperTexImg =
+    <HTMLImageElement>document.getElementById('paper-texture');
+
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 
@@ -103,13 +165,38 @@ function initLandscapeFrame(
   });
 
   const scene = new Scene(canvas);
-  const brushTexImg =
-    <HTMLImageElement>document.getElementById('brush-texture');
-  const shadingTexImg =
-    <HTMLImageElement>document.getElementById('shading-texture');
+
   scene.setImageTexture('brush', brushTexImg);
   scene.setImageTexture('shading', shadingTexImg);
+  scene.setImageTexture('paper', paperTexImg);
   scene.setRenderFrame(
     'landscape', initLandscapeFrame.bind(null, camera));
-  scene.render(true);
+  scene.setRenderFrame(
+    'paper', initPaperLayer.bind(null, canvas));
+  scene.render({
+    animate: false,
+    draw({ animate, firstRender }) {
+      const time = scene.getTimeSinceFirstRender(animate);
+      const brushTexture = scene.getImageTexture('brush');
+      const shadingTexture = scene.getImageTexture('shading');
+      const paperTexture = scene.getImageTexture('paper');
+      const landscape = scene.getRenderFrame('landscape');
+      const paper = scene.getRenderFrame('paper');
+      landscape.shader.setUniformData('uTime', time);
+      scene.gl.activeTexture(scene.gl.TEXTURE0);
+      scene.gl.bindTexture(
+        scene.gl.TEXTURE_2D, brushTexture);
+      scene.gl.activeTexture(scene.gl.TEXTURE1);
+      scene.gl.bindTexture(
+        scene.gl.TEXTURE_2D, shadingTexture);
+      landscape.render(firstRender);
+      scene.gl.activeTexture(scene.gl.TEXTURE0);
+      scene.gl.bindTexture(
+        scene.gl.TEXTURE_2D, landscape.texture);
+      scene.gl.activeTexture(scene.gl.TEXTURE1);
+      scene.gl.bindTexture(
+        scene.gl.TEXTURE_2D, paperTexture);
+      paper.render(firstRender);
+    }
+  });
 })();

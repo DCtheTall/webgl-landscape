@@ -5,6 +5,7 @@ enum ShaderProgramTypes {
   MATRIX4,
   VECTOR2,
   VECTOR3,
+  VECTOR4,
 }
 
 interface ShaderValue {
@@ -172,6 +173,11 @@ export default class Shader {
 
         case ShaderProgramTypes.VECTOR3:
           this.gl.uniform3fv(
+            uniform.location, <number[]>uniform.data);
+          break;
+
+        case ShaderProgramTypes.VECTOR4:
+          this.gl.uniform4fv(
             uniform.location, <number[]>uniform.data);
           break;
 

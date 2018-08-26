@@ -2,8 +2,8 @@ precision mediump float;
 
 uniform float u_SilhouetteEpsilon;
 uniform vec3 u_CameraPosition;
-uniform vec3 u_FogColor;
 uniform vec3 u_LightPosition;
+uniform vec4 u_FogColor;
 uniform mat4 u_ViewInverseTranspose;
 uniform sampler2D u_BrushTextureSampler;
 uniform sampler2D u_ShadingTextureSampler;
@@ -12,7 +12,7 @@ varying vec3 v_PlaneVertex;
 varying vec3 v_PlaneNormal;
 varying mat4 v_ViewMatrix;
 
-#pragma glslify: interpolateFog = require(./lib/fog.glsl);
+#pragma glslify: interpolateFog = require(../lib/fog.glsl);
 
 vec3 applyBrushTexture() {
   vec3 viewDir = normalize(vec4(u_CameraPosition - v_PlaneVertex, 1.).xyz);
@@ -26,7 +26,7 @@ vec3 applyBrushTexture() {
 
 vec3 applyInteriorShading() {
   vec3 lightDirection = normalize(u_LightPosition - v_PlaneVertex);
-  float lambertian = clamp(dot(lightDirection, v_PlaneNormal), 0., 1.);
+  float lambertian = 2. * clamp(dot(lightDirection, v_PlaneNormal), 0.1, .5);
   vec2 texCoord = vec2(lambertian, .5);
   return texture2D(u_ShadingTextureSampler, texCoord).xyz;
 }
@@ -34,11 +34,12 @@ vec3 applyInteriorShading() {
 void main() {
   vec3 brushTextureColor = applyBrushTexture();
   vec3 shadingColor = applyInteriorShading();
-  vec3 colorAfterFog = interpolateFog(
+  vec3 pixelColor = brushTextureColor * shadingColor;
+  vec4 colorAfterFog = interpolateFog(
     u_CameraPosition,
     v_PlaneVertex,
     u_FogColor,
-    brushTextureColor
+    vec4(pixelColor, 1.)
   );
-  gl_FragColor = vec4(colorAfterFog, 1.);
+  gl_FragColor = colorAfterFog;
 }
