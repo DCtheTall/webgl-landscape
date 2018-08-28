@@ -14,6 +14,10 @@ varying mat4 v_ViewMatrix;
 
 #pragma glslify: interpolateFog = require(../lib/fog.glsl);
 
+float getColorLuminosity(vec3 color) {
+  return dot(vec3(.3, .59, .11), color);
+}
+
 vec3 applyBrushTexture() {
   vec3 viewDir = normalize(vec4(u_CameraPosition - v_PlaneVertex, 1.).xyz);
   vec3 transformedNormal = (u_ViewInverseTranspose * vec4(v_PlaneNormal, 1.)).xyz;
@@ -27,18 +31,8 @@ vec3 applyBrushTexture() {
 vec3 applyInteriorShading(vec3 brushTextureColor) {
   vec3 lightDirection = normalize(u_LightPosition - v_PlaneVertex);
   float lambertian = 2. * clamp(dot(lightDirection, v_PlaneNormal), 0.1, .5);
-  vec2 texCoord = vec2(
-    clamp(
-      lambertian * (
-        .3 * brushTextureColor.x
-        + .59 * brushTextureColor.y
-        + .11 * brushTextureColor.z
-      ),
-      0.,
-      1.
-    ),
-    .5
-  );
+  float luminosity = dot(vec3(.3, .59, .11), brushTextureColor);
+  vec2 texCoord = vec2(luminosity, .5);
   return texture2D(u_ShadingTextureSampler, texCoord).xyz;
 }
 
