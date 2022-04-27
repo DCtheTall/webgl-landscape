@@ -1,8 +1,6 @@
 ![alt text](/screenshot.png)
 # Sumi-e WebGL Landscape
 
-[Live Demo](https://dcthetall-webgl-landscape.herokuapp.com)
-
 This project is a procedurally generated
 landscape using WebGL. It uses fractal noise
 created by superimposing Simplex noise
