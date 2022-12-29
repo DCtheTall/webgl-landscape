@@ -28,9 +28,9 @@
     "glslify-loader": "^1.0.2",
     "raw-loader": "^0.5.1",
     "static-eval": "^2.0.2",
-    "ts-loader": "^4.4.2",
+    "ts-loader": "^9.4.2",
     "typescript": "^3.0.1",
-    "webpack": "^4.16.5",
-    "webpack-cli": "^3.1.0"
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   }
 }
