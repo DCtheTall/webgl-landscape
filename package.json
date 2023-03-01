@@ -25,7 +25,7 @@
     "gl-matrix": "^2.7.1",
     "glsl-canny-edge-detection": "^1.0.6",
     "glsl-noise": "0.0.0",
-    "glslify-loader": "^1.0.2",
+    "glslify-loader": "^2.0.0",
     "raw-loader": "^0.5.1",
     "static-eval": "^2.0.2",
     "ts-loader": "^4.4.2",
